@@ -74,6 +74,7 @@
     <Compile Include="Connector\Interfaces\IConnectorForV6.cs" />
     <Compile Include="External\Interfaces\ISignatureClientForV6.cs" />
     <Compile Include="External\SignatureClientForV6.cs" />
+    <Compile Include="Model\Certificate.cs" />
     <Compile Include="Model\Enums\AuthMethod.cs" />
     <Compile Include="_old\classes\Auth.cs" />
     <Compile Include="_old\classes\Certificate.cs" />

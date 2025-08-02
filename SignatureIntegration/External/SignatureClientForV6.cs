@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using SignatureIntegration.Connector;
+using SignatureIntegration.Model.Enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -101,12 +102,27 @@ namespace SignatureIntegration.External
                 ? CredentialCache.DefaultNetworkCredentials 
                 : null;
 
-            var ojson = _connector.PostAsync(endpoint, jsonBody).GetAwaiter().GetResult();
+            var ojson = _connector.PostAsync(endpoint, jsonBody, credentials).GetAwaiter().GetResult();
 
             var accessToken = ojson["token"].ToString();
             var refreshToken = ojson["refreshToken"].ToString();
 
             return new Tuple<string,string>(accessToken, refreshToken);
+        }
+
+        public string GetCertificates(string userid, string orgaid, string token)
+        {
+            var endpoint = new Uri(_baseUri, _endpoints["CERTIFICATE"]);
+
+            var jsonBody = new JObject
+            {
+                ["orgaid"] = orgaid,
+                ["userid"] = userid
+            };
+
+            var ojson = _connector.PostAsync(endpoint, jsonBody, token).GetAwaiter().GetResult();
+
+            return "";
         }
     }
 }

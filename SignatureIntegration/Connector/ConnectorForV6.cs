@@ -14,7 +14,13 @@ namespace SignatureIntegration.Connector
         public ConnectorForV6() 
         {}
 
-        public async Task<JObject> PostAsync(Uri endpoint, JObject body, NetworkCredential credentials = null, string token = "")
+        public async Task<JObject> PostAsync(Uri endpoint, JObject body, NetworkCredential credentials) => await PostAsync(endpoint, body, credentials, null);
+
+        public async Task<JObject> PostAsync(Uri endpoint, JObject body, string token) => await PostAsync(endpoint, body, null, token);
+
+
+
+        private async Task<JObject> PostAsync(Uri endpoint, JObject body, NetworkCredential credentials, string token)
         {
             using (var request = new HttpRequestMessage(HttpMethod.Post, endpoint))
             {
@@ -24,7 +30,8 @@ namespace SignatureIntegration.Connector
 
                 if (!string.IsNullOrEmpty(token))
                 {
-                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    //request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token); <-- no funciona con token bearer
+                    request.Headers.Add("Authentication", token);
                 }
                 else if (credentials != null)
                 {

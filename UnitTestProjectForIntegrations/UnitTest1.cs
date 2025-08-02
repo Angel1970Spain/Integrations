@@ -111,6 +111,10 @@ namespace UnitTestProjectForIntegrations
                     Assert.IsFalse(string.IsNullOrEmpty(_token), "El AccessToken no debe ser null ni cadena vacía.");
                 }
 
+                string orgaid = ConfigurationManager.AppSettings["orgaid"];
+                string userid = ConfigurationManager.AppSettings["login"];
+
+                var r = _client.GetCertificates(userid, orgaid, _token);
 
                 Assert.IsTrue(true);
             }

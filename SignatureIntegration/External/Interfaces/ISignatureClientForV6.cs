@@ -66,5 +66,14 @@ namespace SignatureIntegration.External
         );
 
 
+        /// <summary>
+        /// Obtiene una lista de certificados
+        /// </summary>
+        /// <param name="userid">Pasado a GetToken como "login"</param>
+        /// <param name="orgaid"></param>
+        /// <param name="token">El token obtenido en GetToken</param>
+        /// <returns></returns>
+        string GetCertificates(string userid, string orgaid, string token);
+
     }
 }
