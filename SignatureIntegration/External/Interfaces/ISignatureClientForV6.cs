@@ -1,0 +1,70 @@
+﻿
+using System;
+using System.Xml.Linq;
+
+namespace SignatureIntegration.External
+{
+    public interface ISignatureClientForV6
+    {
+        /// <summary>
+        /// Checkeo para la aplicación de test
+        /// </summary>
+        /// <returns></returns>
+        bool CheckTest();
+
+        
+        /// <summary>
+        /// Devuelve un el AccesToken
+        /// </summary>
+        /// <param name="orgaid"></param>
+        /// <param name="login"></param>
+        /// <param name="pass"></param>
+        /// <param name="module"></param>
+        /// <param name="authmethod"></param>
+        /// <param name="origin"></param>
+        /// <param name="modkey"></param>
+        /// <param name="modver"></param>
+        /// <param name="deviceinfo"></param>
+        /// <returns>AccessToken</returns>
+        string GetToken
+        (
+            string orgaid, 
+            string login, 
+            string pass, 
+            string module,
+            AuthMethod authmethod = AuthMethod.PASS, 
+            string origin = null, 
+            string modkey = null, 
+            string modver = null, 
+            string deviceinfo = null
+        );
+
+        /// <summary>
+        /// Devuelve el AccessToken(pos. 1) y el RefreshToken(pos. 2)
+        /// </summary>
+        /// <param name="orgaid"></param>
+        /// <param name="login"></param>
+        /// <param name="pass"></param>
+        /// <param name="module"></param>
+        /// <param name="authmethod"></param>
+        /// <param name="origin"></param>
+        /// <param name="modkey"></param>
+        /// <param name="modver"></param>
+        /// <param name="deviceinfo"></param>
+        /// <returns>Tuple<AccessToken, RefreshToken></returns>
+        Tuple<string,string> GetTokens
+        (
+            string orgaid,
+            string login,
+            string pass,
+            string module,
+            AuthMethod authmethod = AuthMethod.PASS,
+            string origin = null,
+            string modkey = null,
+            string modver = null,
+            string deviceinfo = null
+        );
+
+
+    }
+}

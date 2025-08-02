@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36221.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignatureIntegration.Test", "SignatureIntegration.Test\SignatureIntegration.Test.csproj", "{78C6627B-CF78-4705-895A-58BC543CCA8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProjectForIntegrations", "UnitTestProjectForIntegrations\UnitTestProjectForIntegrations.csproj", "{B41FF2A1-7961-43C3-9BF5-4EE84F72595E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignatureIntegration", "SignatureIntegration\SignatureIntegration.csproj", "{E734A03C-33B0-410D-9B7D-EF51828D8B27}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{78C6627B-CF78-4705-895A-58BC543CCA8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78C6627B-CF78-4705-895A-58BC543CCA8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78C6627B-CF78-4705-895A-58BC543CCA8F}.Debug|x86.ActiveCfg = Debug|x86
+		{78C6627B-CF78-4705-895A-58BC543CCA8F}.Debug|x86.Build.0 = Debug|x86
+		{78C6627B-CF78-4705-895A-58BC543CCA8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78C6627B-CF78-4705-895A-58BC543CCA8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78C6627B-CF78-4705-895A-58BC543CCA8F}.Release|x86.ActiveCfg = Release|x86
+		{78C6627B-CF78-4705-895A-58BC543CCA8F}.Release|x86.Build.0 = Release|x86
+		{B41FF2A1-7961-43C3-9BF5-4EE84F72595E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B41FF2A1-7961-43C3-9BF5-4EE84F72595E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B41FF2A1-7961-43C3-9BF5-4EE84F72595E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B41FF2A1-7961-43C3-9BF5-4EE84F72595E}.Debug|x86.Build.0 = Debug|Any CPU
+		{B41FF2A1-7961-43C3-9BF5-4EE84F72595E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B41FF2A1-7961-43C3-9BF5-4EE84F72595E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B41FF2A1-7961-43C3-9BF5-4EE84F72595E}.Release|x86.ActiveCfg = Release|Any CPU
+		{B41FF2A1-7961-43C3-9BF5-4EE84F72595E}.Release|x86.Build.0 = Release|Any CPU
+		{E734A03C-33B0-410D-9B7D-EF51828D8B27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E734A03C-33B0-410D-9B7D-EF51828D8B27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E734A03C-33B0-410D-9B7D-EF51828D8B27}.Debug|x86.ActiveCfg = Debug|x86
+		{E734A03C-33B0-410D-9B7D-EF51828D8B27}.Debug|x86.Build.0 = Debug|x86
+		{E734A03C-33B0-410D-9B7D-EF51828D8B27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E734A03C-33B0-410D-9B7D-EF51828D8B27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E734A03C-33B0-410D-9B7D-EF51828D8B27}.Release|x86.ActiveCfg = Release|x86
+		{E734A03C-33B0-410D-9B7D-EF51828D8B27}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0C89F111-7009-451B-97B5-AF8F57CC8284}
+	EndGlobalSection
+EndGlobal
