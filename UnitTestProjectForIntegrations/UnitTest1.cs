@@ -35,12 +35,13 @@ namespace UnitTestProjectForIntegrations
         }
 
         [TestMethod]
-        public void TestMethod1()
+        public void Test()
         {
             var r = _client.CheckTest();
 
             Assert.AreEqual(true, r);
         }
+
 
         [TestMethod]
         public void GetToken()
