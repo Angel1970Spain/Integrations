@@ -110,7 +110,7 @@ namespace SignatureIntegration.External
             return new Tuple<string,string>(accessToken, refreshToken);
         }
 
-        public string GetCertificates(string userid, string orgaid, string token)
+        public List<Certificate> GetCertificates(string userid, string orgaid, string token)
         {
             var endpoint = new Uri(_baseUri, _endpoints["CERTIFICATE"]);
 
@@ -121,6 +121,30 @@ namespace SignatureIntegration.External
             };
 
             var ojson = _connector.PostAsync(endpoint, jsonBody, token).GetAwaiter().GetResult();
+
+            var r = ojson["certlist"].ToObject<List<Certificate>>();
+
+            return r;
+        }
+
+
+        public string Sign
+        (
+            string token,
+            string signatureType,
+            string certid,
+            string certpin,
+            string profile,
+            string extensions,
+            string parameters,
+            string document,
+            string hashalgorithm = "SHA256",
+            string envelop = "",
+            string detachedsignature = ""
+        )
+        {
+
+
 
             return "";
         }

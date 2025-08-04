@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.Xml.Linq;
 
 namespace SignatureIntegration.External
@@ -72,8 +73,23 @@ namespace SignatureIntegration.External
         /// <param name="userid">Pasado a GetToken como "login"</param>
         /// <param name="orgaid"></param>
         /// <param name="token">El token obtenido en GetToken</param>
-        /// <returns></returns>
-        string GetCertificates(string userid, string orgaid, string token);
+        /// <returns>Lista de instancias de certificate</returns>
+        List<Certificate> GetCertificates(string userid, string orgaid, string token);
+
+        string Sign
+        (
+            string token, 
+            string signatureType, 
+            string certid, 
+            string certpin, 
+            string profile, 
+            string extensions, 
+            string parameters, 
+            string document, 
+            string hashalgorithm = "SHA256", 
+            string envelop = "", 
+            string detachedsignature = ""
+        );
 
     }
 }
