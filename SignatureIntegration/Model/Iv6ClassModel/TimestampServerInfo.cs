@@ -1,7 +1,7 @@
 ﻿
 namespace SignatureIntegration.Model.Iv6ClassModel
 {
-    internal class TimestampServerInfo
+    public class TimestampServerInfo
     {
         /// <summary>
         /// Server name

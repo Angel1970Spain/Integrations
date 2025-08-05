@@ -1,20 +1,22 @@
 ﻿using Newtonsoft.Json.Linq;
 using SignatureIntegration.Connector;
+using SignatureIntegration.InternalLogic;
+using SignatureIntegration.Model;
 using SignatureIntegration.Model.Enums;
+using SignatureIntegration.Model.Iv6ClassModel;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
+using System.Security.Authentication;
 
 namespace SignatureIntegration.External
 {
     public class SignatureClientForV6: ISignatureClientForV6
     {
         private IConnectorForV6 _connector;
+
+        private SignatureAuxLogic _auxLogic;
 
         private Uri _baseUri = null;
 
@@ -23,9 +25,11 @@ namespace SignatureIntegration.External
         public SignatureClientForV6(Uri baseUri, Dictionary<string, Uri> endpoints) 
         {
             _connector = new ConnectorForV6();
+            _auxLogic = new SignatureAuxLogic();
+
             _baseUri = baseUri;
             _endpoints = endpoints;
-
+            
             CheckUrls();
         }
 
@@ -49,6 +53,15 @@ namespace SignatureIntegration.External
 
 
         public bool CheckTest() => true;
+
+        public bool CheckGeneralistic() 
+        {
+            var par = "cause=test;autopos=true;autosize=true;hidetext=false;policy=policyidentifier=2.16.724.1.3.1.1.2.1.9,policydigest=G7roucf600+f03r/o0bAOQ6WAs0=,policydigestalgorithm=sha1,policiidentifieraddqualifier=true,policyqualifieruri=https://sede.060.gob.es/politica_de_firma_anexo_1.pdf";
+
+            _auxLogic.CastTheParams(par);
+
+            return true;
+        } 
 
 
         public string GetToken
@@ -110,7 +123,7 @@ namespace SignatureIntegration.External
             return new Tuple<string,string>(accessToken, refreshToken);
         }
 
-        public List<Certificate> GetCertificates(string userid, string orgaid, string token)
+        public List<old_Certificate> GetCertificates(string userid, string orgaid, string token)
         {
             var endpoint = new Uri(_baseUri, _endpoints["CERTIFICATE"]);
 
@@ -122,11 +135,36 @@ namespace SignatureIntegration.External
 
             var ojson = _connector.PostAsync(endpoint, jsonBody, token).GetAwaiter().GetResult();
 
-            var r = ojson["certlist"].ToObject<List<Certificate>>();
+            var r = ojson["certlist"].ToObject<List<old_Certificate>>();
 
             return r;
         }
 
+        public string Sign
+        (
+            string token,
+            string signatureType,
+            string certid,
+            string certpin,
+            string profile,
+            string extensions,
+            string parameters,
+            string document,
+            string hashAlgType = "SHA256",
+            string envelop = "",
+            string detachedsignature = ""
+        )
+        {
+            SygnatureType _type = (SygnatureType)Enum.Parse(typeof(SygnatureType), signatureType, ignoreCase: true);
+
+            SignPadesParams _params = _auxLogic.CastTheParams(parameters);
+
+            byte[] _bytesDocument = Convert.FromBase64String(document);
+
+            HashAlgType _hashAlgType = (HashAlgType)Enum.Parse(typeof(HashAlgType), hashAlgType, ignoreCase: true);
+
+            return Sign( token, _type, certid, certpin, profile, extensions, _params, _bytesDocument, _hashAlgType, envelop, detachedsignature );
+        }
 
         public string Sign
         (
@@ -136,14 +174,31 @@ namespace SignatureIntegration.External
             string certpin,
             string profile,
             string extensions,
-            string parameters,
-            string document,
+            SignPadesParams parameters,
+            byte[] document,
             HashAlgType hashAlgType = HashAlgType.SHA256,
             string envelop = "",
             string detachedsignature = ""
         )
         {
+            switch (type) 
+            {
+                case SygnatureType.PADES:
 
+                    var request = new SignaturePades 
+                    {
+                        cert = new Cert { certid = certid, pin = certpin },
+                        document = document,
+                        profile = profile,
+                        hashalgorithm = hashAlgType.ToString(),
+                        parameters = parameters,
+                        asyncdata = null,
+                        extension = extensions,
+                        operation = "sign"
+                    };
+
+                    break;
+            }
 
 
             return "";

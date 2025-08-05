@@ -28,7 +28,7 @@ namespace UnitTestProjectForIntegrations
 
         private string _token = "";
 
-        private List<Certificate> _certs = null;
+        private List<old_Certificate> _certs = null;
 
         public UnitTest1() 
         {
@@ -55,6 +55,15 @@ namespace UnitTestProjectForIntegrations
 
             Assert.AreEqual(true, r);
         }
+
+        [TestMethod]
+        public void TestGeneralistic()
+        {
+            var r = _client.CheckGeneralistic();
+
+            Assert.AreEqual(true, r);
+        }
+
 
 
         [TestMethod]
@@ -156,7 +165,7 @@ namespace UnitTestProjectForIntegrations
                 }
             }
 
-            Certificate cert = _certs.First();
+            old_Certificate cert = _certs.First();
 
             List<Documents> documents = GetConfDocs();
 

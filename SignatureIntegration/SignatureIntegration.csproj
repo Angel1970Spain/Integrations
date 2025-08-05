@@ -74,6 +74,8 @@
     <Compile Include="Connector\Interfaces\IConnectorForV6.cs" />
     <Compile Include="External\Interfaces\ISignatureClientForV6.cs" />
     <Compile Include="External\SignatureClientForV6.cs" />
+    <Compile Include="InternalLogic\SignatureAuxLogic.cs" />
+    <Compile Include="Model\Iv6ClassModel\Biometry.cs" />
     <Compile Include="Model\Iv6ClassModel\Caller.cs" />
     <Compile Include="Model\Iv6ClassModel\Cert.cs" />
     <Compile Include="Model\Certificate.cs" />
@@ -83,6 +85,7 @@
     <Compile Include="Model\Iv6ClassModel\PdfSignBackground.cs" />
     <Compile Include="Model\Iv6ClassModel\PDFSignParams.cs" />
     <Compile Include="Model\Iv6ClassModel\PdfSignWidgetProps.cs" />
+    <Compile Include="Model\Iv6ClassModel\SignPolicy.cs" />
     <Compile Include="Model\SignaturePades.cs" />
     <Compile Include="Model\Iv6ClassModel\SignatureTextArea.cs" />
     <Compile Include="Model\Iv6ClassModel\SignatureWidgetTextField.cs" />
@@ -90,7 +93,7 @@
     <Compile Include="Model\Iv6ClassModel\TimestampServerInfo.cs" />
     <Compile Include="Model\Iv6ClassModel\TransparencyMask.cs" />
     <Compile Include="_old\classes\Auth.cs" />
-    <Compile Include="_old\classes\Certificate.cs" />
+    <Compile Include="_old\classes\old_Certificate.cs" />
     <Compile Include="_old\classes\SignatureParameters.cs" />
     <Compile Include="_old\common\Rester.cs" />
     <Compile Include="Connector\ConnectorForV6.cs" />

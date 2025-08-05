@@ -4,9 +4,9 @@ using System.Runtime.InteropServices;
 namespace SignatureIntegration
 {
 	#region SIGN
-	internal class SignPades
+	internal class old_SignPades
 	{
-		public Cert cert { get; set; }
+		public old_Cert cert { get; set; }
 		public string document { get; set; } //documento que vamos a firmar, puede estar firmado o no
 		public byte[] asyncdata { get; set; } //firma en modo detached cuando sea necesaria
 		public string profile { get; set; } //hasta donde sabemos puede ser BASIC ó ENHANCED (enhanced por defecto es BES, si queremos EPES lo pasamos por la extension... que es lo que mas seajusta a la realidad)
@@ -15,11 +15,11 @@ namespace SignatureIntegration
 		public string operation { get; set; } // sign, cosign, upgrade, append 
 		public bool? force { get; set; }//saltar las validaciones de certificado y cadena 
 		public string[][] extradata { get; set; }
-		public SignPadesParams parameters { get; set; }
+		public old_SignPadesParams parameters { get; set; }
 	}
-	internal class SignXades
+	internal class old_SignXades
 	{
-		public Cert cert { get; set; }
+		public old_Cert cert { get; set; }
 		public string document { get; set; } //documento que vamos a firmar, puede estar firmado o no
 		public byte[] signdata { get; set; } //firma en modo detached cuando sea necesaria
 		public string profile { get; set; } //hasta donde sabemos puede ser BASIC ó ENHANCED (enhanced por defecto es BES, si queremos EPES lo pasamos por la extension... que es lo que mas seajusta a la realidad)
@@ -29,11 +29,11 @@ namespace SignatureIntegration
 		public string operation { get; set; } // sign, cosign, upgrade, append 
 		public bool? force { get; set; } //saltar las validaciones de certificado y cadena
 		public string[][] extradata { get; set; }
-		public SignXadesParams parameters { get; set; }
+		public old_SignXadesParams parameters { get; set; }
 	}
-	internal class SignCades
+	internal class old_SignCades
 	{
-		public Cert cert { get; set; }
+		public old_Cert cert { get; set; }
 		public string document { get; set; } //documento que vamos a firmar, puede estar firmado o no
 		public byte[] signdata { get; set; } //firma en modo detached cuando sea necesaria
 		public string profile { get; set; } //hasta donde sabemos puede ser BASIC ó ENHANCED (enhanced por defecto es BES, si queremos EPES lo pasamos por la extension... que es lo que mas seajusta a la realidad)
@@ -43,29 +43,29 @@ namespace SignatureIntegration
 		public string operation { get; set; } // sign, cosign, upgrade, append 
 		public bool? force { get; set; }//saltar las validaciones de certificado y cadena
 		public string[][] extradata { get; set; }
-		public SignCadesParams parameters { get; set; }
+		public old_SignCadesParams parameters { get; set; }
 	}
-	internal class SignPadesParams
+	internal class old_SignPadesParams
 	{
 		public string cause { get; set; }
-		public SignPolicy policy { get; set; }
-		public PDFSignParams pdfparameters { get; set; }
-		public TimestampServerInfo[] tstampserver { get; set; }
-		public Biometry biometry { get; set; }
+		public old_SignPolicy policy { get; set; }
+		public old_PDFSignParams pdfparameters { get; set; }
+		public old_TimestampServerInfo[] tstampserver { get; set; }
+		public old_Biometry biometry { get; set; }
 
 	}
-	internal class SignXadesParams
+	internal class old_SignXadesParams
 	{
 		public string signerrole { get; set; }
-		public SignPolicy policy { get; set; }
-		public TimestampServerInfo tstampserver { get; set; }
+		public old_SignPolicy policy { get; set; }
+		public old_TimestampServerInfo tstampserver { get; set; }
 	}
-	internal class SignCadesParams
+	internal class old_SignCadesParams
 	{
-		public SignPolicy policy { get; set; }
-		public TimestampServerInfo[] tstampservers { get; set; }
+		public old_SignPolicy policy { get; set; }
+		public old_TimestampServerInfo[] tstampservers { get; set; }
 	}
-	internal class TimestampServerInfo
+	internal class old_TimestampServerInfo
 	{
 		public string name { get; set; }
 		public string url { get; set; }
@@ -81,7 +81,7 @@ namespace SignatureIntegration
 		public string policy { get; set; }
 
 	}
-	internal class SignPolicy
+	internal class old_SignPolicy
 	{
 		public string policyidentifier { get; set; }
 		public bool? policyidentifieraddqualifier { get; set; }
@@ -90,22 +90,22 @@ namespace SignatureIntegration
 		public string policydigestalgorithm { get; set; }
 		public string policyqualifieruri { get; set; }
 	}
-	internal class PDFSignParams
+	internal class old_PDFSignParams
 	{
 		public string pwd { get; set; }
 		public bool? signvisible { get; set; }
-		public PdfSignBackground signbackgroundconfig { get; set; }
-		public PdfSignWidgetProps widgetprops { get; set; }
+		public old_PdfSignBackground signbackgroundconfig { get; set; }
+		public old_PdfSignWidgetProps widgetprops { get; set; }
 	}
-	internal class PdfSignBackground
+	internal class old_PdfSignBackground
 	{
 		public byte[] signback { get; set; }
 		public bool? signbackautostretch { get; set; }
 		public int? stretchx { get; set; }
 		public int? stretchy { get; set; }
-		public TransparencyMask transparencymask { get; set; }
+		public old_TransparencyMask transparencymask { get; set; }
 	}
-	internal class TransparencyMask
+	internal class old_TransparencyMask
 	{
 		public int? red { get; set; }
 		public int? redtolerance { get; set; }
@@ -115,7 +115,7 @@ namespace SignatureIntegration
 		public int? bluetolerance { get; set; }
 		public int? tolerance { get; set; }
 	}
-	internal class PdfSignWidgetProps
+	internal class old_PdfSignWidgetProps
 	{
 		public bool? autopos { get; set; }
 		public int? offsetx { get; set; }
@@ -144,7 +144,7 @@ namespace SignatureIntegration
 
 		public string captionheader;
 	}
-	internal class Biometry
+	internal class old_Biometry
 	{
 		public byte[] data { get; set; }
 		public byte[] cer { get; set; }

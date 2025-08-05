@@ -1,5 +1,6 @@
 ﻿
 using SignatureIntegration.Model.Enums;
+using SignatureIntegration.Model.Iv6ClassModel;
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
@@ -14,7 +15,13 @@ namespace SignatureIntegration.External
         /// <returns></returns>
         bool CheckTest();
 
-        
+        /// <summary>
+        /// Realiza un check con llamadas internas en tiempo de programación. a eliminar en versión final
+        /// </summary>
+        /// <returns></returns>
+        bool CheckGeneralistic();
+
+
         /// <summary>
         /// Devuelve un el AccesToken
         /// </summary>
@@ -75,24 +82,38 @@ namespace SignatureIntegration.External
         /// <param name="orgaid"></param>
         /// <param name="token">El token obtenido en GetToken</param>
         /// <returns>Lista de instancias de certificate</returns>
-        List<Certificate> GetCertificates(string userid, string orgaid, string token);
-
+        List<old_Certificate> GetCertificates(string userid, string orgaid, string token);
 
 
 
 
         string Sign
         (
-            string token, 
-            SygnatureType type, 
-            string certid, 
-            string certpin, 
-            string profile, 
-            string extensions, 
-            string parameters, 
+            string token,
+            string signatureType,
+            string certid,
+            string certpin,
+            string profile,
+            string extensions,
+            string parameters,
             string document,
-            HashAlgType hashAlgType = HashAlgType.SHA256, 
-            string envelop = "", 
+            string hashAlgType = "SHA256",
+            string envelop = "",
+            string detachedsignature = ""
+        );
+
+        string Sign
+        (
+            string token,
+            SygnatureType type,
+            string certid,
+            string certpin,
+            string profile,
+            string extensions,
+            SignPadesParams parameters,
+            byte[] document,
+            HashAlgType hashAlgType = HashAlgType.SHA256,
+            string envelop = "",
             string detachedsignature = ""
         );
 

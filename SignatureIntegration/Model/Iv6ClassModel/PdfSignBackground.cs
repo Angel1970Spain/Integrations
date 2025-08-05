@@ -2,7 +2,7 @@
 
 namespace SignatureIntegration.Model.Iv6ClassModel
 {
-    internal class PdfSignBackground
+    public class PdfSignBackground
     {
         /// <summary>
         /// Image in bytes(ONLY JPG, PNG, GIF, BMP FORMAT)
@@ -12,46 +12,46 @@ namespace SignatureIntegration.Model.Iv6ClassModel
         /// <summary>
         /// Alpha threshold for the binary mask(ONLY image formats with alpha channel png, bmp, gif ) values between 0 y 254
         /// </summary>
-        internal int? maskalphathreshold { get; set; }
+        public int? maskalphathreshold { get; set; }
 
         /// <summary>
         /// Background image auto stretch enabled/disabled flag
         /// </summary>
-        internal bool? signbackautostretch { get; set; }
+        public bool? signbackautostretch { get; set; }
 
         /// <summary>
         /// Axis X auto stretch
         /// </summary>
-        internal int? strechx { get; set; }
+        public int? strechx { get; set; }
 
         /// <summary>
         /// Axis Y auto stretch
         /// </summary>
-        internal int? strechy { get; set; }
+        public int? strechy { get; set; }
 
         /// <summary>
         /// JPG image transparency mask
         /// </summary>
-        internal TransparencyMask transparencymask { get; set; }
+        public TransparencyMask transparencymask { get; set; }
 
         /// <summary>
         /// Position inside the signature box, possible values : top, bottom, right, left.Leave empty or'custom' value to occupy the entire surface of the box
         /// </summary>
-        internal string position { get; set; }
+        public string position { get; set; }
 
         /// <summary>
         /// Axis x offset from origin(0 left, top and bottom, Width/2  right)
         /// </summary>
-        internal int? xoffset { get; set; }
+        public int? xoffset { get; set; }
 
         /// <summary>
         /// Axis y offset from origin(0 left, right and bottom, Height/2 top)
         /// </summary>
-        internal int? yoffset { get; set; }
+        public int? yoffset { get; set; }
 
         /// <summary>
         /// Padding between signature box and image.
         /// </summary>
-        internal int? padding { get; set; }
+        public int? padding { get; set; }
     }
 }

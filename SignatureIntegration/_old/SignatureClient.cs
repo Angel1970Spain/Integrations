@@ -62,7 +62,7 @@ namespace SignatureIntegration
 		public string GetToken(string orgaid, string login, string password, string method, string modulekey, string module = "signatureintegration")
 		{
 			//prepare request
-			AuhtLogin request = new AuhtLogin() {
+			old_AuhtLogin request = new old_AuhtLogin() {
 				orgaid = orgaid,
 				login = login,
 				pass = password,
@@ -92,7 +92,7 @@ namespace SignatureIntegration
 		/// <returns>List of certifficates</returns>
 		public string GetCertificates(string token)
 		{
-			List<Certificate> listCertificates = null;
+			List<old_Certificate> listCertificates = null;
 			
 			//prepare request
 			string request = "";
@@ -108,10 +108,10 @@ namespace SignatureIntegration
 				throw new Exception($"Error on GetToken() ({response["error"]["message"]}) [{response["error"]["traceid"]}]");
 			
 			//prepare response
-			listCertificates = new List<Certificate>();
+			listCertificates = new List<old_Certificate>();
 			for (int i = 0; i < response["certlist"].Length; i++) {
 
-				Certificate cert = new Certificate() {
+				old_Certificate cert = new old_Certificate() {
 					certid = response["certlist"][i]["certid"],
 					issuer = response["certlist"][i]["issuer"],
 					serial = response["certlist"][i]["serial"],
@@ -149,8 +149,8 @@ namespace SignatureIntegration
 
 			switch (signatureType.ToLower()) {
 				case "pades":
-					var requestpades = new SignPades() {
-						cert = new Cert() { certid = certid, pin = certpin },
+					var requestpades = new old_SignPades() {
+						cert = new old_Cert() { certid = certid, pin = certpin },
 						document = document,
 						profile = profile,
 						hashalgorithm = hashalgorithm,
@@ -165,8 +165,8 @@ namespace SignatureIntegration
 
 					break;
 				case "xades":
-					var requestxades = new SignXades() {
-						cert = new Cert() { certid = certid, pin = certpin },
+					var requestxades = new old_SignXades() {
+						cert = new old_Cert() { certid = certid, pin = certpin },
 						document = document,
 						profile = profile,
 						hashalgorithm = "SHA256",
@@ -182,8 +182,8 @@ namespace SignatureIntegration
 					response = Rester.Json.Deserialize<dynamic>(restclient.post(Rester.endpoints.signaturexades, requestxades, headers));
 					break;
 				case "cades":
-					var requestcades = new SignCades() {
-						cert = new Cert() { certid = certid, pin = certpin },
+					var requestcades = new old_SignCades() {
+						cert = new old_Cert() { certid = certid, pin = certpin },
 						document = document,
 						profile = profile,
 						hashalgorithm = "SHA256",
@@ -286,13 +286,13 @@ namespace SignatureIntegration
 
 		#region Private Methods
 		
-		private SignCadesParams GetSignCadesParams(string parameters)
+		private old_SignCadesParams GetSignCadesParams(string parameters)
 		{
 			if (string.IsNullOrWhiteSpace(parameters)) throw new Exception("Insuficient parameters");
 
 			var paramsplit = parameters.Split(';');
-			SignCadesParams cpp = new SignCadesParams();
-			cpp.policy = new SignPolicy();
+			old_SignCadesParams cpp = new old_SignCadesParams();
+			cpp.policy = new old_SignPolicy();
 
 			foreach (var item in paramsplit) {
 
@@ -305,7 +305,7 @@ namespace SignatureIntegration
 
 
 					case "policy": cpp.policy = GetPolicyParameters(paramvalue); break;
-					case "tsaparameters": cpp.tstampservers = new TimestampServerInfo[] { GetTSAParameters(paramvalue) }; break;
+					case "tsaparameters": cpp.tstampservers = new old_TimestampServerInfo[] { GetTSAParameters(paramvalue) }; break;
 
 					default:
 						break;
@@ -316,13 +316,13 @@ namespace SignatureIntegration
 			return cpp;
 		}
 
-		private SignXadesParams GetSignXadesParams(string parameters)
+		private old_SignXadesParams GetSignXadesParams(string parameters)
 		{
 
 			if (string.IsNullOrWhiteSpace(parameters)) throw new Exception("Insuficient parameters");
 
 			var paramsplit = parameters.Split(';');
-			SignXadesParams xpp = new SignXadesParams();
+			old_SignXadesParams xpp = new old_SignXadesParams();
 			
 
 			foreach (var item in paramsplit) {
@@ -345,19 +345,19 @@ namespace SignatureIntegration
 			return xpp;
 		}
 
-		private SignPadesParams GetSignPadesParams(string parameters)
+		private old_SignPadesParams GetSignPadesParams(string parameters)
 		{
 
 			if (string.IsNullOrWhiteSpace(parameters)) throw new Exception("Insuficient parameters");
 
 			var paramsplit = parameters.Split(';');
-			SignPadesParams spp = new SignPadesParams();
+			old_SignPadesParams spp = new old_SignPadesParams();
 
-			spp.pdfparameters = new PDFSignParams();
-			spp.pdfparameters.signbackgroundconfig = new PdfSignBackground();
-			spp.pdfparameters.widgetprops = new PdfSignWidgetProps();
+			spp.pdfparameters = new old_PDFSignParams();
+			spp.pdfparameters.signbackgroundconfig = new old_PdfSignBackground();
+			spp.pdfparameters.widgetprops = new old_PdfSignWidgetProps();
 
-			spp.policy = new SignPolicy();
+			spp.policy = new old_SignPolicy();
 
 			foreach (var item in paramsplit) {
 
@@ -389,7 +389,7 @@ namespace SignatureIntegration
 					case "captionsignerinfo": spp.pdfparameters.widgetprops.captionsignerinfo = paramvalue; break;
 					case "captionalgorithm": spp.pdfparameters.widgetprops.captionalgorithm = paramvalue; break;
 					case "captionheader": spp.pdfparameters.widgetprops.captionheader = paramvalue; break;
-					case "tstampserver": spp.tstampserver = new TimestampServerInfo[] { GetTSAParameters(paramvalue) }; break;
+					case "tstampserver": spp.tstampserver = new old_TimestampServerInfo[] { GetTSAParameters(paramvalue) }; break;
 					case "policy": spp.policy = GetPolicyParameters(paramvalue); break;
 
 
@@ -402,9 +402,9 @@ namespace SignatureIntegration
 			return spp;
 		}
 
-		private SignPolicy GetPolicyParameters(string valor)
+		private old_SignPolicy GetPolicyParameters(string valor)
 		{
-			var policy = new SignPolicy();
+			var policy = new old_SignPolicy();
 			var policyparams = valor.Split(',');
 
 			foreach (var policyitem in policyparams)
@@ -430,10 +430,10 @@ namespace SignatureIntegration
 			return policy;
 		}
 
-		private TimestampServerInfo GetTSAParameters(string valor)
+		private old_TimestampServerInfo GetTSAParameters(string valor)
 		{
 			var tsa = valor.Split(',');
-			TimestampServerInfo tsaserver = new TimestampServerInfo();
+			old_TimestampServerInfo tsaserver = new old_TimestampServerInfo();
 
 			foreach (var tsaitem in tsa) {
 				var data = tsaitem.Split(new char[] { '=' }, 2);

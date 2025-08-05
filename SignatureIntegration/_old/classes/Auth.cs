@@ -1,7 +1,7 @@
 ﻿
 namespace SignatureIntegration
 {
-	internal class AuhtLogin
+	internal class old_AuhtLogin
 	{
 		public string orgaid { get; set; }
 		public string login { get; set; }

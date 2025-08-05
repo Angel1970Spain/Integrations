@@ -1,7 +1,7 @@
 ﻿
 namespace SignatureIntegration.Model.Iv6ClassModel
 {
-    internal class SignatureWidgetTextField
+    public class SignatureWidgetTextField
     {
         /// <summary>
         /// Field type, possible values : 
@@ -16,37 +16,37 @@ namespace SignatureIntegration.Model.Iv6ClassModel
         ///     'reason' (parameter 'cause'), 
         ///     'location' (parameter 'location')
         /// </summary>
-        internal string fieldtype { get; set; }
+        public string fieldtype { get; set; }
 
         /// <summary>
         /// text value
         /// </summary>
-        internal string text { get; set; }
+        public string text { get; set; }
 
         /// <summary>
         /// field label
         /// </summary>
-        internal string label { get; set; }
+        public string label { get; set; }
 
         /// <summary>
         /// font axis x size
         /// </summary>
-        internal int? fontsizex { get; set; }
+        public int? fontsizex { get; set; }
 
         /// <summary>
         /// font axis y size
         /// </summary>
-        internal int? fontsizey { get; set; }
+        public int? fontsizey { get; set; }
 
         /// <summary>
         /// Axis x offset from origin(0 left, top and bottom, Width/2  right)
         /// </summary>
-        internal int? xoffset { get; set; }
+        public int? xoffset { get; set; }
 
         /// <summary>
         /// Axis y offset from origin(0 left, right and bottom, Height/2 top)
         /// </summary>
-        internal int? yoffset { get; set; }
+        public int? yoffset { get; set; }
 
         /// <summary>
         /// Pdf viewer font name, possible values : 
@@ -66,12 +66,12 @@ namespace SignatureIntegration.Model.Iv6ClassModel
         ///     'ZapfDingbats' . 
         /// The fonts are not embedded in the document
         /// </summary>
-        internal string fontresourcename { get; set; }
+        public string fontresourcename { get; set; }
         
         /// <summary>
         /// string with pdf graphic operator, example : "1.0 0.0 0.0 rg\r" (changes text line to red)
         /// </summary>
-        internal string customdata { get; set; }
+        public string customdata { get; set; }
         
     }
 }
