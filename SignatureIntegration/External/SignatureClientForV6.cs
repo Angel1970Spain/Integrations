@@ -131,14 +131,14 @@ namespace SignatureIntegration.External
         public string Sign
         (
             string token,
-            string signatureType,
+            SygnatureType type,
             string certid,
             string certpin,
             string profile,
             string extensions,
             string parameters,
             string document,
-            string hashalgorithm = "SHA256",
+            HashAlgType hashAlgType = HashAlgType.SHA256,
             string envelop = "",
             string detachedsignature = ""
         )

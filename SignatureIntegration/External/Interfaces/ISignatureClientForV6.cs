@@ -1,4 +1,5 @@
 ﻿
+using SignatureIntegration.Model.Enums;
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
@@ -76,17 +77,21 @@ namespace SignatureIntegration.External
         /// <returns>Lista de instancias de certificate</returns>
         List<Certificate> GetCertificates(string userid, string orgaid, string token);
 
+
+
+
+
         string Sign
         (
             string token, 
-            string signatureType, 
+            SygnatureType type, 
             string certid, 
             string certpin, 
             string profile, 
             string extensions, 
             string parameters, 
-            string document, 
-            string hashalgorithm = "SHA256", 
+            string document,
+            HashAlgType hashAlgType = HashAlgType.SHA256, 
             string envelop = "", 
             string detachedsignature = ""
         );
