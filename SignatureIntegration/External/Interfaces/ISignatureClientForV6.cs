@@ -16,13 +16,6 @@ namespace SignatureIntegration.External
         bool CheckTest();
 
         /// <summary>
-        /// Realiza un check con llamadas internas en tiempo de programación. a eliminar en versión final
-        /// </summary>
-        /// <returns></returns>
-        bool CheckGeneralistic();
-
-
-        /// <summary>
         /// Devuelve un el AccesToken
         /// </summary>
         /// <param name="orgaid"></param>
@@ -85,6 +78,12 @@ namespace SignatureIntegration.External
         List<old_Certificate> GetCertificates(string userid, string orgaid, string token);
 
 
+        /// <summary>
+        /// Convierte un string plano en un modelo SignPadesParams
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        SignPadesParams CastTheParams(string parameters);
 
 
         string Sign

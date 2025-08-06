@@ -52,14 +52,8 @@ namespace SignatureIntegration.External
         }
 
 
-        public bool CheckTest() => true;
-
-        public bool CheckGeneralistic() 
+        public bool CheckTest() 
         {
-            var policy = "policyidentifier=2.16.724.1.3.1.1.2.1.9,policydigest=G7roucf600+f03r/o0bAOQ6WAs0=,policydigestalgorithm=sha1,policiidentifieraddqualifier=true,policyqualifieruri=https://sede.060.gob.es/politica_de_firma_anexo_1.pdf";
-            var par = $"cause=test;autopos=true;autosize=true;hidetext=false;policy={policy}";
-
-            _auxLogic.CastTheParams(par);
 
             return true;
         } 
@@ -82,6 +76,10 @@ namespace SignatureIntegration.External
 
             return tokens.Item1;
         }
+
+
+
+
 
 
         public Tuple<string, string> GetTokens(
@@ -124,6 +122,10 @@ namespace SignatureIntegration.External
             return new Tuple<string,string>(accessToken, refreshToken);
         }
 
+
+
+
+
         public List<old_Certificate> GetCertificates(string userid, string orgaid, string token)
         {
             var endpoint = new Uri(_baseUri, _endpoints["CERTIFICATE"]);
@@ -140,6 +142,16 @@ namespace SignatureIntegration.External
 
             return r;
         }
+
+
+
+
+        public SignPadesParams CastTheParams(string parameters) 
+        {
+            return _auxLogic.GetSignPadesParams(parameters);
+        }
+
+
 
         public string Sign
         (
@@ -158,7 +170,7 @@ namespace SignatureIntegration.External
         {
             SygnatureType _type = (SygnatureType)Enum.Parse(typeof(SygnatureType), signatureType, ignoreCase: true);
 
-            SignPadesParams _params = _auxLogic.CastTheParams(parameters);
+            SignPadesParams _params = _auxLogic.GetSignPadesParams(parameters);
 
             byte[] _bytesDocument = Convert.FromBase64String(document);
 

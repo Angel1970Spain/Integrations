@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using SignatureIntegration;
 using SignatureIntegration.External;
 using System;
@@ -9,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices.WindowsRuntime;
+using UnitTestProjectForIntegrations.Data;
 
 
 namespace UnitTestProjectForIntegrations
@@ -48,6 +50,11 @@ namespace UnitTestProjectForIntegrations
             return endpoints;
         }
 
+
+
+
+
+
         [TestMethod]
         public void Test()
         {
@@ -56,13 +63,8 @@ namespace UnitTestProjectForIntegrations
             Assert.AreEqual(true, r);
         }
 
-        [TestMethod]
-        public void TestGeneralistic()
-        {
-            var r = _client.CheckGeneralistic();
 
-            Assert.AreEqual(true, r);
-        }
+
 
 
 
@@ -90,6 +92,10 @@ namespace UnitTestProjectForIntegrations
                 Assert.Fail($"Se lanzó una excepción inesperada: {ex.Message}");
             }
         }
+
+
+
+
 
         [TestMethod]
         public void GetTokens()
@@ -119,6 +125,10 @@ namespace UnitTestProjectForIntegrations
                 Assert.Fail($"Se lanzó una excepción inesperada: {ex.Message}");
             }
         }
+
+
+
+
 
         [TestMethod]
         public void GetCertificates() 
@@ -150,6 +160,29 @@ namespace UnitTestProjectForIntegrations
                 Assert.Fail($"Se lanzó una excepción inesperada: {ex.Message}");
             }
         }
+
+
+
+
+
+        [TestMethod]
+        public void CastTheParams() 
+        {
+            try
+            {
+                var json = JsonConvert.SerializeObject( _client.CastTheParams(DataForTests.Parameters));
+
+                Assert.AreEqual(json, DataForTests.JsonCastPars, "El casteo no se corresponde con el esperado");
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"Se lanzó una excepción inesperada: {ex.Message}");
+            }
+        }
+
+
+
+
 
         [TestMethod]
         public void SignDocs()

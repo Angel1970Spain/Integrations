@@ -10,7 +10,7 @@ namespace SignatureIntegration.InternalLogic
         internal SignatureAuxLogic() 
         { }
 
-        internal SignPadesParams CastTheParams(string parameters) 
+        internal SignPadesParams GetSignPadesParams(string parameters) 
         {
             if (string.IsNullOrWhiteSpace(parameters)) throw new Exception("Parameters cannot be null or empty.");
 
