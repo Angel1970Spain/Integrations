@@ -7,7 +7,7 @@ namespace SignatureIntegration.Model.Iv6ClassModel
         /// <summary>
         /// Image in bytes(ONLY JPG, PNG, GIF, BMP FORMAT)
         /// </summary>
-        byte[] signback { get; set; }
+        public byte[] signback { get; set; }
 
         /// <summary>
         /// Alpha threshold for the binary mask(ONLY image formats with alpha channel png, bmp, gif ) values between 0 y 254

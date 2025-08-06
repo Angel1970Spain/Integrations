@@ -56,7 +56,8 @@ namespace SignatureIntegration.External
 
         public bool CheckGeneralistic() 
         {
-            var par = "cause=test;autopos=true;autosize=true;hidetext=false;policy=policyidentifier=2.16.724.1.3.1.1.2.1.9,policydigest=G7roucf600+f03r/o0bAOQ6WAs0=,policydigestalgorithm=sha1,policiidentifieraddqualifier=true,policyqualifieruri=https://sede.060.gob.es/politica_de_firma_anexo_1.pdf";
+            var policy = "policyidentifier=2.16.724.1.3.1.1.2.1.9,policydigest=G7roucf600+f03r/o0bAOQ6WAs0=,policydigestalgorithm=sha1,policiidentifieraddqualifier=true,policyqualifieruri=https://sede.060.gob.es/politica_de_firma_anexo_1.pdf";
+            var par = $"cause=test;autopos=true;autosize=true;hidetext=false;policy={policy}";
 
             _auxLogic.CastTheParams(par);
 
