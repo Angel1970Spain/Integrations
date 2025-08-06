@@ -3,6 +3,8 @@ namespace SignatureIntegration.Model.Iv6ClassModel
 {
     public class TimestampServerInfo
     {
+        public TimestampServerInfo() { }
+
         /// <summary>
         /// Server name
         /// </summary>

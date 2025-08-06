@@ -3,6 +3,8 @@ namespace SignatureIntegration.Model.Iv6ClassModel
 {
     public class PDFSignParams
     {
+        public PDFSignParams() { }
+
         /// <summary>
         /// PDF document password
         /// </summary>

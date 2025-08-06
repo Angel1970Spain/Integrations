@@ -3,6 +3,8 @@ namespace SignatureIntegration.Model.Iv6ClassModel
 {
     public class PdfSignWidgetProps
     {
+        public PdfSignWidgetProps() { }
+
         /// <summary>
         /// Visible signature box auto position enabled/disabled flag
         /// </summary>

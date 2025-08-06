@@ -107,7 +107,7 @@ namespace SignatureIntegration.External
             SygnatureType type,
             string certid,
             string certpin,
-            string profile,
+            Profile profile,
             string extensions,
             SignPadesParams parameters,
             byte[] document,

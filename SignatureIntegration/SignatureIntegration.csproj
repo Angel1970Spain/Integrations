@@ -79,9 +79,7 @@
     <Compile Include="Model\Iv6ClassModel\Caller.cs" />
     <Compile Include="Model\Iv6ClassModel\Cert.cs" />
     <Compile Include="Model\Certificate.cs" />
-    <Compile Include="Model\Enums\AuthMethod.cs" />
-    <Compile Include="Model\Enums\HashAlgType.cs" />
-    <Compile Include="Model\Enums\SygnatureType.cs" />
+    <Compile Include="Model\Enums\Enums.cs" />
     <Compile Include="Model\Iv6ClassModel\PdfSignBackground.cs" />
     <Compile Include="Model\Iv6ClassModel\PDFSignParams.cs" />
     <Compile Include="Model\Iv6ClassModel\PdfSignWidgetProps.cs" />

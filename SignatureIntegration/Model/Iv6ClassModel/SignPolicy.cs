@@ -3,6 +3,8 @@ namespace SignatureIntegration.Model.Iv6ClassModel
 {
     public class SignPolicy
     {
+        public SignPolicy() { }
+
         /// <summary>
         /// Signature's policy identifier
         /// </summary>

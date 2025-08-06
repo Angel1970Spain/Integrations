@@ -1,26 +1,28 @@
 ﻿
 namespace SignatureIntegration.Model.Iv6ClassModel
 {
-    internal class Caller
+    public class Caller
     {
+        public Caller() { }
+
         /// <summary>
         /// Integration module
         /// </summary>
-        internal string app { get; set; }
+        public string app { get; set; }
 
         /// <summary>
         /// Client host
         /// </summary>
-        internal string host { get; set; }
+        public string host { get; set; }
 
         /// <summary>
         /// Client URL location
         /// </summary>
-        internal string location { get; set; }
+        public string location { get; set; }
 
         /// <summary>
         /// Client host user
         /// </summary>
-        internal string remoteuser { get; set; }
+        public string remoteuser { get; set; }
     }
 }

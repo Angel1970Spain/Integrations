@@ -3,6 +3,8 @@ namespace SignatureIntegration.Model.Iv6ClassModel
 {
     public class SignatureWidgetTextField
     {
+        public SignatureWidgetTextField() { }
+
         /// <summary>
         /// Field type, possible values : 
         ///     'freetext' (free text), 

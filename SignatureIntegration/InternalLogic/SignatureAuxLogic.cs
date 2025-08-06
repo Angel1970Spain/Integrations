@@ -18,7 +18,6 @@ namespace SignatureIntegration.InternalLogic
             { 
                 pdfparameters = new PDFSignParams 
                 { 
-                    signbackgroundconfig = new PdfSignBackground(), 
                     widgetprops = new PdfSignWidgetProps() 
                 } 
             };
@@ -33,8 +32,6 @@ namespace SignatureIntegration.InternalLogic
                 {
                     case "cause": spp.cause = val; break;
                     case "pwd": spp.pdfparameters.pwd = val; break;
-                    case "signback": spp.pdfparameters.signbackgroundconfig.signback = Encoding.UTF8.GetBytes(val); break;
-                    case "signbackautostretch": spp.pdfparameters.signbackgroundconfig.signbackautostretch = Convert.ToBoolean(val); break;
                     case "signvisible": spp.pdfparameters.signvisible = Convert.ToBoolean(val); break;
                     case "autopos": spp.pdfparameters.widgetprops.autopos = Convert.ToBoolean(val); break;
                     case "autosize": spp.pdfparameters.widgetprops.autosize = Convert.ToBoolean(val); break;

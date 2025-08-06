@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SignatureIntegration.Connector;
 using SignatureIntegration.InternalLogic;
 using SignatureIntegration.Model;
@@ -126,7 +127,12 @@ namespace SignatureIntegration.External
 
 
 
-        public List<old_Certificate> GetCertificates(string userid, string orgaid, string token)
+        public List<old_Certificate> GetCertificates
+        (
+            string userid, 
+            string orgaid, 
+            string token
+        )
         {
             var endpoint = new Uri(_baseUri, _endpoints["CERTIFICATE"]);
 
@@ -168,15 +174,17 @@ namespace SignatureIntegration.External
             string detachedsignature = ""
         )
         {
-            SygnatureType _type = (SygnatureType)Enum.Parse(typeof(SygnatureType), signatureType, ignoreCase: true);
+            SygnatureType o_type = (SygnatureType)Enum.Parse(typeof(SygnatureType), signatureType, ignoreCase: true);
 
-            SignPadesParams _params = _auxLogic.GetSignPadesParams(parameters);
+            Profile o_profile = (Profile)Enum.Parse(typeof(Profile), profile, ignoreCase: true);
 
-            byte[] _bytesDocument = Convert.FromBase64String(document);
+            SignPadesParams o_params = _auxLogic.GetSignPadesParams(parameters);
 
-            HashAlgType _hashAlgType = (HashAlgType)Enum.Parse(typeof(HashAlgType), hashAlgType, ignoreCase: true);
+            byte[] o_document = Convert.FromBase64String(document);
 
-            return Sign( token, _type, certid, certpin, profile, extensions, _params, _bytesDocument, _hashAlgType, envelop, detachedsignature );
+            HashAlgType o_hashAlgType = (HashAlgType)Enum.Parse(typeof(HashAlgType), hashAlgType, ignoreCase: true);
+
+            return Sign( token, o_type, certid, certpin, o_profile, extensions, o_params, o_document, o_hashAlgType, envelop, detachedsignature );
         }
 
         public string Sign
@@ -185,7 +193,7 @@ namespace SignatureIntegration.External
             SygnatureType type,
             string certid,
             string certpin,
-            string profile,
+            Profile profile,
             string extensions,
             SignPadesParams parameters,
             byte[] document,
@@ -198,19 +206,27 @@ namespace SignatureIntegration.External
             {
                 case SygnatureType.PADES:
 
-                    var request = new SignaturePades 
+                    var endpoint = new Uri(_baseUri, _endpoints["SIGN_PADES"]);
+
+                    var body = new SignaturePades 
                     {
                         cert = new Cert { certid = certid, pin = certpin },
                         document = document,
-                        profile = profile,
-                        hashalgorithm = hashAlgType.ToString(),
+                        profile = profile.ToString().ToLower(),
+                        hashalgorithm = hashAlgType.ToString().ToLower(),
                         parameters = parameters,
                         asyncdata = null,
                         extension = extensions,
                         operation = "sign"
                     };
 
-                    break;
+                    var jsonBody = JObject.FromObject(body);
+
+                    var ojson = _connector.PostAsync(endpoint, jsonBody, token).GetAwaiter().GetResult();
+
+                    string json = ojson.ToString(Newtonsoft.Json.Formatting.Indented);
+
+                    return json;
             }
 
 

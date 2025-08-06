@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using SignatureIntegration;
 using SignatureIntegration.External;
+using SignatureIntegration.Model.Enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -170,9 +171,9 @@ namespace UnitTestProjectForIntegrations
         {
             try
             {
-                var json = JsonConvert.SerializeObject( _client.CastTheParams(DataForTests.Parameters));
+                var json = JsonConvert.SerializeObject( _client.CastTheParams(DataForTests.ParametersCades));
 
-                Assert.AreEqual(json, DataForTests.JsonCastPars, "El casteo no se corresponde con el esperado");
+                Assert.AreEqual(json, DataForTests.JsonCastParsCades, "El casteo no se corresponde con el esperado");
             }
             catch (Exception ex)
             {
@@ -202,20 +203,18 @@ namespace UnitTestProjectForIntegrations
 
             List<Documents> documents = GetConfDocs();
 
-            foreach (var doc in documents) 
+            foreach (var doc in documents.Where(x => x.Key == "cades")) 
             {
-                var file = Convert.ToBase64String(File.ReadAllBytes(doc.Path));
+                var file = File.ReadAllBytes(doc.Path);
 
-                var signed = _client
-                    .Sign
-                    ( token:          _token, 
-                      signatureType: "pades",
-                      certid:        cert.certid, 
-                      certpin:       "123123q", 
-                      profile:       "enhanced", 
-                      extensions:    "lt", 
-                      parameters:    @"cause=test;autopos=true;autosize=true;hidetext=false;policy=policyidentifier=2.16.724.1.3.1.1.2.1.9,policydigest=G7roucf600+f03r/o0bAOQ6WAs0=,policydigestalgorithm=sha1,policiidentifieraddqualifier=true,policyqualifieruri=https://sede.060.gob.es/politica_de_firma_anexo_1.pdf", 
-                      document:      file);
+                var signed = _client.Sign( token:      _token, 
+                                           type:       SygnatureType.PADES,
+                                           certid:     cert.certid, 
+                                           certpin:    "Abc123", 
+                                           profile:    Profile.ENHANCED, 
+                                           extensions: "lt", 
+                                           parameters: _client.CastTheParams(DataForTests.ParametersCades),
+                                           document:   file);
             } 
 
 

@@ -3,6 +3,8 @@ namespace SignatureIntegration.Model.Iv6ClassModel
 {
     public class SignPadesParams
     {
+        public SignPadesParams() { }
+
         /// <summary>
         /// Opcional
         /// Signature reason

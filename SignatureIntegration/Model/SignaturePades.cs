@@ -4,34 +4,36 @@ using _SignPadesParams = SignatureIntegration.Model.Iv6ClassModel.SignPadesParam
 
 namespace SignatureIntegration.Model
 {
-    internal class SignaturePades
+    public class SignaturePades
     {
+        public SignaturePades() { }
+
         /// <summary>
         /// * Requerido
         /// </summary>
-        internal _Cert cert { get; set; }
+        public _Cert cert { get; set; }
 
         /// <summary>
         /// * Requerido
         /// PDF document to sign
         /// </summary>
-        internal byte[] document { get; set; }
+        public byte[] document { get; set; }
 
         /// <summary>
         /// Signature in detached mode
         /// </summary>
-        internal byte[] asyncdata { get; set; }
+        public byte[] asyncdata { get; set; }
 
         /// <summary>
         /// * Requerido
         ///	Signature profile: 'basic' or 'enhanced'
         /// </summary>
-        internal string profile { get; set; }
+        public string profile { get; set; }
 
         /// <summary>
         /// Hash algorithm: 'SHA1', 'SHA256', 'SHA512' or 'MD5', SHA1 by default
         /// </summary>
-        internal string hashalgorithm { get; set; }
+        public string hashalgorithm { get; set; }
 
         /// <summary>
         /// Signature extensions, separated by coma: 
@@ -41,27 +43,27 @@ namespace SignatureIntegration.Model
         ///     'biometry' = Include biometric data, 
         ///     'revinfo'  = Include certificate revocation information
         /// </summary>
-        internal string extension { get; set; }
+        public string extension { get; set; }
 
         /// <summary>
         /// Kind of operation to perform: sign, cosign, upgrade, append...
         /// </summary>
-        internal string operation { get; set; }
+        public string operation { get; set; }
 
         /// <summary>
         /// Signature extra information
         /// </summary>
-        internal string[][] extradata { get; set; }
+        public string[][] extradata { get; set; }
 
         /// <summary>
         /// IvSign signature complementary PAdES parameters
         /// </summary>
-        internal _SignPadesParams parameters { get; set; }
+        public _SignPadesParams parameters { get; set; }
 
         /// <summary>
         /// IvSign caller object
         /// </summary>
-        internal _Caller caller { get; set; }
+        public _Caller caller { get; set; }
 
     }
 }

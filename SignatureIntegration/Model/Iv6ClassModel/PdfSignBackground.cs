@@ -4,6 +4,8 @@ namespace SignatureIntegration.Model.Iv6ClassModel
 {
     public class PdfSignBackground
     {
+        public PdfSignBackground() { }
+
         /// <summary>
         /// Image in bytes(ONLY JPG, PNG, GIF, BMP FORMAT)
         /// </summary>

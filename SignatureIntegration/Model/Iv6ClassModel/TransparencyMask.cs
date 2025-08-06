@@ -3,6 +3,8 @@ namespace SignatureIntegration.Model.Iv6ClassModel
 {
     public class TransparencyMask
     {
+        public TransparencyMask() { }
+
         /// <summary>
         /// Red channel
         /// </summary>
