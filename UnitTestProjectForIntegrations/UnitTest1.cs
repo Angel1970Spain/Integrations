@@ -175,7 +175,7 @@ namespace UnitTestProjectForIntegrations
         {
             try
             {
-                var json = JsonConvert.SerializeObject( _client.CastTheParams(DataForTests.ParametersCades));
+                var json = JsonConvert.SerializeObject( _client.CastTheParams(DataForTests.ParametersPades));
 
                 Assert.AreEqual(json, DataForTests.JsonCastParsCades, "El casteo no se corresponde con el esperado");
             }
