@@ -25,10 +25,10 @@ namespace SignatureIntegration.Test
 			var certificates = client.GetCertificates(token);
 
 			//example xml serialization/deserialization
-			var xmlDeserialized = certificates.Deserialize<List<old_Certificate>>();
+			var xmlDeserialized = certificates.Deserialize<List<Certificate>>();
 
 			//Select certificate
-			old_Certificate cert = null;
+			Certificate cert = null;
 			if (xmlDeserialized.Count > 0) {
 				//Obtain one (per example id 0)
 				cert = xmlDeserialized[certselected];

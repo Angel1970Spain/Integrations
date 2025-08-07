@@ -13,10 +13,10 @@ namespace SignatureIntegration.Model.Enums
 
     public enum Profile
     {
-        BASIC, ENHANCED
+        BASIC, T, ENHANCED
     }
 
-    public enum SygnatureType
+    public enum SignatureType
     {
         PADES, XADES, CADES
     }

@@ -5,7 +5,7 @@ namespace SignatureIntegration
 {
 
 	//[Guid("2A7C32A5-C1D8-4D46-B3CB-C2561A73FB63"), ComVisible(true), ProgId("SignatureIntegration.certificate")]
-	public class old_Certificate
+	public class Certificate
 	{
 		public string certid { get; set; }
 		public string userid { get; set; }

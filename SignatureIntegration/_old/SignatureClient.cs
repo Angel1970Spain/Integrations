@@ -92,7 +92,7 @@ namespace SignatureIntegration
 		/// <returns>List of certifficates</returns>
 		public string GetCertificates(string token)
 		{
-			List<old_Certificate> listCertificates = null;
+			List<Certificate> listCertificates = null;
 			
 			//prepare request
 			string request = "";
@@ -108,10 +108,10 @@ namespace SignatureIntegration
 				throw new Exception($"Error on GetToken() ({response["error"]["message"]}) [{response["error"]["traceid"]}]");
 			
 			//prepare response
-			listCertificates = new List<old_Certificate>();
+			listCertificates = new List<Certificate>();
 			for (int i = 0; i < response["certlist"].Length; i++) {
 
-				old_Certificate cert = new old_Certificate() {
+				Certificate cert = new Certificate() {
 					certid = response["certlist"][i]["certid"],
 					issuer = response["certlist"][i]["issuer"],
 					serial = response["certlist"][i]["serial"],

@@ -91,7 +91,7 @@
     <Compile Include="Model\Iv6ClassModel\TimestampServerInfo.cs" />
     <Compile Include="Model\Iv6ClassModel\TransparencyMask.cs" />
     <Compile Include="_old\classes\Auth.cs" />
-    <Compile Include="_old\classes\old_Certificate.cs" />
+    <Compile Include="_old\classes\Certificate.cs" />
     <Compile Include="_old\classes\SignatureParameters.cs" />
     <Compile Include="_old\common\Rester.cs" />
     <Compile Include="Connector\ConnectorForV6.cs" />

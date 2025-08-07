@@ -127,7 +127,7 @@ namespace SignatureIntegration.External
 
 
 
-        public List<old_Certificate> GetCertificates
+        public List<Certificate> GetCertificates
         (
             string userid, 
             string orgaid, 
@@ -144,7 +144,7 @@ namespace SignatureIntegration.External
 
             var ojson = _connector.PostAsync(endpoint, jsonBody, token).GetAwaiter().GetResult();
 
-            var r = ojson["certlist"].ToObject<List<old_Certificate>>();
+            var r = ojson["certlist"].ToObject<List<Certificate>>();
 
             return r;
         }
@@ -174,7 +174,7 @@ namespace SignatureIntegration.External
             string detachedsignature = ""
         )
         {
-            SygnatureType o_type = (SygnatureType)Enum.Parse(typeof(SygnatureType), signatureType, ignoreCase: true);
+            SignatureType o_type = (SignatureType)Enum.Parse(typeof(SignatureType), signatureType, ignoreCase: true);
 
             Profile o_profile = (Profile)Enum.Parse(typeof(Profile), profile, ignoreCase: true);
 
@@ -184,53 +184,77 @@ namespace SignatureIntegration.External
 
             HashAlgType o_hashAlgType = (HashAlgType)Enum.Parse(typeof(HashAlgType), hashAlgType, ignoreCase: true);
 
-            return Sign( token, o_type, certid, certpin, o_profile, extensions, o_params, o_document, o_hashAlgType, envelop, detachedsignature );
+            return Sign( token, o_type, certid, certpin, o_profile, extensions, o_document, o_params, o_hashAlgType, envelop, detachedsignature );
         }
 
         public string Sign
         (
             string token,
-            SygnatureType type,
+            SignatureType type,
             string certid,
             string certpin,
             Profile profile,
             string extensions,
-            SignPadesParams parameters,
             byte[] document,
+            SignPadesParams parameters = null,
             HashAlgType hashAlgType = HashAlgType.SHA256,
             string envelop = "",
             string detachedsignature = ""
         )
         {
+            Uri endpoint = null;
+            SignaturePades body = null;
+
             switch (type) 
             {
-                case SygnatureType.PADES:
+                case SignatureType.PADES:
 
-                    var endpoint = new Uri(_baseUri, _endpoints["SIGN_PADES"]);
+                    endpoint = new Uri(_baseUri, _endpoints["SIGN_PADES"]);
 
-                    var body = new SignaturePades 
+                    body = new SignaturePades 
                     {
                         cert = new Cert { certid = certid, pin = certpin },
                         document = document,
                         profile = profile.ToString().ToLower(),
                         hashalgorithm = hashAlgType.ToString().ToLower(),
                         parameters = parameters,
-                        asyncdata = null,
+                        asyncdata = string.IsNullOrWhiteSpace(detachedsignature) ? null : Convert.FromBase64String(detachedsignature),
                         extension = extensions,
                         operation = "sign"
                     };
 
-                    var jsonBody = JObject.FromObject(body);
+                    break;
 
-                    var ojson = _connector.PostAsync(endpoint, jsonBody, token).GetAwaiter().GetResult();
+                case SignatureType.CADES:
 
-                    string json = ojson.ToString(Newtonsoft.Json.Formatting.Indented);
+                    endpoint = new Uri(_baseUri, _endpoints["SIGN_CADES"]);
 
-                    return json;
+                    body = new SignaturePades
+                    {
+                        cert = new Cert { certid = certid, pin = certpin },
+                        document = document,
+                        profile = profile.ToString().ToLower(),
+                        hashalgorithm = HashAlgType.SHA256.ToString().ToLower(),
+                        parameters = parameters,
+                        asyncdata = string.IsNullOrWhiteSpace(detachedsignature) ? null : Convert.FromBase64String(detachedsignature),
+                        extension = extensions,
+                        operation = "sign"
+                    };
+
+                    break;
+
+                case SignatureType.XADES:
+
+                    return "";
             }
 
+            var jsonBody = JObject.FromObject(body);
 
-            return "";
+            var ojson = _connector.PostAsync(endpoint, jsonBody, token).GetAwaiter().GetResult();
+
+            string json = ojson.ToString(Newtonsoft.Json.Formatting.Indented);
+
+            return json;
         }
     }
 }

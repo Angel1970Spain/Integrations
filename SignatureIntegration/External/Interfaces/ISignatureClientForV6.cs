@@ -75,7 +75,7 @@ namespace SignatureIntegration.External
         /// <param name="orgaid"></param>
         /// <param name="token">El token obtenido en GetToken</param>
         /// <returns>Lista de instancias de certificate</returns>
-        List<old_Certificate> GetCertificates(string userid, string orgaid, string token);
+        List<Certificate> GetCertificates(string userid, string orgaid, string token);
 
 
         /// <summary>
@@ -104,13 +104,13 @@ namespace SignatureIntegration.External
         string Sign
         (
             string token,
-            SygnatureType type,
+            SignatureType type,
             string certid,
             string certpin,
             Profile profile,
             string extensions,
-            SignPadesParams parameters,
             byte[] document,
+            SignPadesParams parameters = null,
             HashAlgType hashAlgType = HashAlgType.SHA256,
             string envelop = "",
             string detachedsignature = ""

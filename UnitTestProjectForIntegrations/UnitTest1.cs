@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SignatureIntegration;
 using SignatureIntegration.External;
 using SignatureIntegration.Model.Enums;
@@ -11,6 +12,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using UnitTestProjectForIntegrations.Data;
 
 
@@ -19,11 +22,12 @@ namespace UnitTestProjectForIntegrations
     [TestClass]
     public class UnitTest1
     {
-        internal class Documents
+
+
+        private class Doc
         {
-            internal string Key { get; set; }
+            internal SignatureType SignType { get; set; }
             internal string Path { get; set; }
-            internal string CheckResult { get; set; }
         }
 
 
@@ -31,7 +35,7 @@ namespace UnitTestProjectForIntegrations
 
         private string _token = "";
 
-        private List<old_Certificate> _certs = null;
+        private List<Certificate> _certs = null;
 
         public UnitTest1() 
         {
@@ -199,26 +203,51 @@ namespace UnitTestProjectForIntegrations
                 }
             }
 
-            old_Certificate cert = _certs.First();
+            Certificate cert = _certs.First();
 
-            List<Documents> documents = GetConfDocs();
+            var documents = GetConfDocs();
 
-            foreach (var doc in documents.Where(x => x.Key == "cades")) 
+            foreach (var doc in documents.Where(x => x.SignType == SignatureType.CADES).Take(1)) 
             {
                 var file = File.ReadAllBytes(doc.Path);
 
-                var signed = _client.Sign( token:      _token, 
-                                           type:       SygnatureType.PADES,
-                                           certid:     cert.certid, 
-                                           certpin:    "Abc123", 
-                                           profile:    Profile.ENHANCED, 
-                                           extensions: "lt", 
-                                           parameters: _client.CastTheParams(DataForTests.ParametersCades),
-                                           document:   file);
+                var b64 = Convert.ToBase64String(file);
+
+                string signed = "";
+
+                switch (doc.SignType) 
+                {
+                    case SignatureType.PADES:
+
+                        signed = _client.Sign(token: _token,
+                                              type: doc.SignType,
+                                              certid: cert.certid,
+                                              certpin: "Abc123",
+                                              profile: Profile.ENHANCED,
+                                              extensions: "lt",
+                                              document: file,
+                                              parameters: _client.CastTheParams(DataForTests.ParametersPades));
+                        break;
+
+                    case SignatureType.CADES:
+
+                        signed = _client.Sign(token: _token,
+                                              type: doc.SignType,
+                                              certid: cert.certid,
+                                              certpin: "Abc123",
+                                              profile: Profile.T,
+                                              extensions: "lt",
+                                              document: file, 
+                                              parameters: null);
+                        break;
+
+                    case SignatureType.XADES:
+
+                        break;
+                }
+
+                SaveDoc(signed, doc.SignType);
             } 
-
-
-
 
             Assert.IsTrue(true);
         }
@@ -232,19 +261,49 @@ namespace UnitTestProjectForIntegrations
 
         #region privathe methods
 
-        internal List<Documents> GetConfDocs()
+        private void SaveDoc(string signed, SignatureType stype) 
         {
-            List<Documents> documents = new List<Documents>();
+            if (string.IsNullOrEmpty(signed)) return;
+
+            try
+            {
+                byte[] pdfBytes = Convert.FromBase64String((JObject.Parse(signed))["data"]?.ToString());
+
+                string ext = "";
+
+                switch (stype) 
+                {
+                    case SignatureType.PADES:
+
+                        ext = "pdf";
+
+                        break;
+
+                    default:
+
+                        ext = "p7m";
+
+                        break;
+                }
+                                
+                File.WriteAllBytes($"c:/work/z_testdocs/{DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss")}.{ext}", pdfBytes);
+            }
+            catch { }
+        }
+
+
+        private List<Doc> GetConfDocs()
+        {
+            List<Doc> documents = new List<Doc>();
 
             var confDocs = ConfigurationManager.GetSection("documents") as NameValueCollection;
 
             foreach (var key in confDocs.AllKeys)
             {
-                documents.Add(new Documents
+                documents.Add(new Doc
                 {
-                    Key = key,
-                    Path = Path.ChangeExtension(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Documents", key), ".pdf"),
-                    CheckResult = confDocs[key]
+                    SignType = (SignatureType)Enum.Parse(typeof(SignatureType), confDocs[key], ignoreCase: true),
+                    Path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Documents", key)
                 });
             }
 
