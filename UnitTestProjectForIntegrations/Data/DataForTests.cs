@@ -12,7 +12,7 @@ namespace UnitTestProjectForIntegrations.Data
 
         internal static string ParametersCades = @"";
 
-        internal static string CheckCastParsCades = @"{""tstampservers"":null,""policy"":{""policyidentifier"":null,""policyidentifieraddqualifier"":null,""policydescription"":null,""policydigest"":null,""policydigestalgorithm"":null,""policyqualifieruri"":null},""includewholechain"":null,""addsigningcertificatev2"":null}";
+        internal static string CheckCastParsCades = @"{""tstampservers"":null,""policy"":null,""includewholechain"":false,""addsigningcertificatev2"":false}";
 
         internal static List<Document> Documents = new List<Document>
         {
