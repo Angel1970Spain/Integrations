@@ -255,6 +255,8 @@ namespace SignatureIntegration.External
                         envelop = envelop
                     };
 
+                    var str = JsonConvert.SerializeObject(bodyc);
+
                     jsonBody = JObject.FromObject(bodyc);
 
                     break;

@@ -60,7 +60,9 @@ namespace SignatureIntegration.InternalLogic
         {
             SignCadesParams cpp = new SignCadesParams 
             { 
-                policy = new SignPolicy() 
+                policy = null,
+                includewholechain = false,
+                addsigningcertificatev2 = false
             };
 
             foreach (var par in parameters.Split(';'))
@@ -113,6 +115,8 @@ namespace SignatureIntegration.InternalLogic
 
         private SignPolicy GetSignPolicyPars(string valor)
         {
+            if (string.IsNullOrEmpty(valor)) return null;
+
             var policy = new SignPolicy();
 
             foreach (var par in valor.Split(','))

@@ -199,7 +199,7 @@ namespace UnitTestProjectForIntegrations
 
             Certificate cert = _certs.First();
 
-            foreach (var doc in DataForTests.Documents.Where(x => x.SignType == SignatureType.CADES).Take(1)) 
+            foreach (var doc in DataForTests.Documents.Where(x => x.SignType == SignatureType.PADES).Take(1)) 
             {
                 var file = File.ReadAllBytes(doc.Path);
 
@@ -232,7 +232,7 @@ namespace UnitTestProjectForIntegrations
                                                            certpin: "Abc123",
                                                            profile: Profile.T,
                                                            extensions: "lt",
-                                                           parameters: _client.CastThePadesParams(DataForTests.ParametersCades),
+                                                           parameters: _client.CastTheCadesParams(DataForTests.ParametersCades),
                                                            document: file));
 
                         Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
