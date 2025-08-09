@@ -86,7 +86,7 @@
     <Compile Include="Model\Iv6ClassModel\SignCadesParams.cs" />
     <Compile Include="Model\Iv6ClassModel\SignLocation.cs" />
     <Compile Include="Model\Iv6ClassModel\SignPolicy.cs" />
-    <Compile Include="Model\Iv6ClassModel\SignXadesParameters.cs" />
+    <Compile Include="Model\Iv6ClassModel\SignXadesParams.cs" />
     <Compile Include="Model\SignatureCades.cs" />
     <Compile Include="Model\SignatureXades.cs" />
     <Compile Include="Model\SignaturePades.cs" />

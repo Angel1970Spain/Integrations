@@ -1,9 +1,9 @@
 ﻿
 namespace SignatureIntegration.Model.Iv6ClassModel
 {
-    public class SignXadesParameters
+    public class SignXadesParams
     {
-        public SignXadesParameters() 
+        public SignXadesParams() 
         {}
 
         /// <summary>

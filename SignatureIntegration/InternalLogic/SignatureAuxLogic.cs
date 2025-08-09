@@ -83,6 +83,34 @@ namespace SignatureIntegration.InternalLogic
         }
 
 
+        public SignXadesParams GetSignXadesParams(string parameters)
+        {
+            SignXadesParams xpp = new SignXadesParams 
+            {
+                policy = null,
+                includewholechain = false,
+                includekeyvalue = false,
+                xadesversion = 2
+            };
+
+            foreach (var par in parameters.Split(';'))
+            {
+                var keyval = par.Split(new char[] { '=' }, 2);
+                var key = keyval[0].ToLower();
+                var val = keyval.Count() > 1 ? keyval[1] : "";
+
+                switch (key.ToLower())
+                {
+                    case "signerrole": xpp.signerrole = val; break;
+                    case "policy": xpp.policy = GetSignPolicyPars(val); break;
+                    case "tsaparameters": xpp.tstampservers = GetTimestampServerInfoPars(val); break;
+                    default: break;
+                }
+            }
+
+            return xpp;
+        }
+
         private TimeStampServerInfo[] GetTimestampServerInfoPars(string tsa)
         {
             TimeStampServerInfo tsaserver = new TimeStampServerInfo();

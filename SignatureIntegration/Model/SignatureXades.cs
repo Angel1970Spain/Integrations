@@ -59,7 +59,7 @@ namespace SignatureIntegration.Model
         /// <summary>
         /// IvSign signature complementary XAdES parameters
         /// </summary>
-        public SignXadesParameters parameters { get; set; }
+        public SignXadesParams parameters { get; set; }
 
         /// <summary>
         /// IvSign caller object

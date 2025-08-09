@@ -169,9 +169,13 @@ namespace UnitTestProjectForIntegrations
 
                 var jsonCades = JsonConvert.SerializeObject(_client.CastTheCadesParams(DataForTests.ParametersCades));
 
+                var jsonXades = JsonConvert.SerializeObject(_client.CastTheXadesParams(DataForTests.ParametersXades));
+
                 Assert.AreEqual(jsonPades, DataForTests.CheckCastParsPades, "El casteo para el documento Pades no se corresponde con el esperado");
                 
                 Assert.AreEqual(jsonCades, DataForTests.CheckCastParsCades, "El casteo para el documento Cades no se corresponde con el esperado");
+
+                Assert.AreEqual(jsonXades, DataForTests.CheckCastParsXades, "El casteo para el documento Cades no se corresponde con el esperado");
             }
             catch (Exception ex)
             {
@@ -199,11 +203,9 @@ namespace UnitTestProjectForIntegrations
 
             Certificate cert = _certs.First();
 
-            foreach (var doc in DataForTests.Documents.Where(x => x.SignType == SignatureType.PADES).Take(1)) 
+            foreach (var doc in DataForTests.Documents)//.Where(x => x.SignType == SignatureType.XADES).Take(1)) 
             {
                 var file = File.ReadAllBytes(doc.Path);
-
-                var b64 = Convert.ToBase64String(file);
 
                 JObject jObj = null;
 
@@ -215,7 +217,7 @@ namespace UnitTestProjectForIntegrations
                                                            type: doc.SignType,
                                                            certid: cert.certid,
                                                            certpin: "Abc123",
-                                                           profile: Profile.ENHANCED,
+                                                           profile: ProfilePades.ENHANCED,
                                                            extensions: "lt",
                                                            parameters: _client.CastThePadesParams(DataForTests.ParametersPades),
                                                            document: file));
@@ -230,7 +232,7 @@ namespace UnitTestProjectForIntegrations
                                                            type: doc.SignType,
                                                            certid: cert.certid,
                                                            certpin: "Abc123",
-                                                           profile: Profile.T,
+                                                           profile: ProfileCades.T,
                                                            extensions: "lt",
                                                            parameters: _client.CastTheCadesParams(DataForTests.ParametersCades),
                                                            document: file));
@@ -241,6 +243,17 @@ namespace UnitTestProjectForIntegrations
 
                     case SignatureType.XADES:
 
+                        jObj = JObject.Parse(_client.Sign(token: _token,
+                                                           type: doc.SignType,
+                                                           certid: cert.certid,
+                                                           certpin: "Abc123",
+                                                           profile: ProfileXades.BES,
+                                                           extensions: "lt",
+                                                           parameters: _client.CastTheXadesParams(DataForTests.ParametersCades),
+                                                           document: file));
+
+                        Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
+
                         break;
                 }
 
@@ -250,6 +263,85 @@ namespace UnitTestProjectForIntegrations
             Assert.IsTrue(true);
         }
 
+
+
+
+
+        [TestMethod]
+        public void SignDocs_Compatible()
+        {
+            if (_certs == null || _certs.Count == 0)
+            {
+                GetCertificates();
+
+                if (_certs == null || _certs.Count == 0)
+                {
+                    Assert.Fail("La lista de certificados no debe ser null o no puede está vacía.");
+                    return;
+                }
+            }
+
+            Certificate cert = _certs.First();
+
+            foreach (var doc in DataForTests.Documents)//.Where(x => x.SignType == SignatureType.PADES).Take(1)) 
+            {
+                var b64file = Convert.ToBase64String(File.ReadAllBytes(doc.Path));
+
+                JObject jObj = null;
+
+                switch (doc.SignType)
+                {
+                    case SignatureType.PADES:
+
+                        jObj = JObject.Parse(_client.Sign(token: _token,
+                                                          signatureType: "pades",
+                                                          certid: cert.certid,
+                                                          certpin: "Abc123",
+                                                          profile: "enhanced",
+                                                          extensions: "lt",
+                                                          parameters: DataForTests.ParametersPades,
+                                                          document: b64file));
+
+                        Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
+
+                        break;
+
+                    case SignatureType.CADES:
+
+                        jObj = JObject.Parse(_client.Sign(token: _token,
+                                                           signatureType: "cades",
+                                                           certid: cert.certid,
+                                                           certpin: "Abc123",
+                                                           profile: "t",
+                                                           extensions: "lt",
+                                                           parameters: DataForTests.ParametersCades,
+                                                           document: b64file));
+
+                        Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
+
+                        break;
+
+                    case SignatureType.XADES:
+
+                        jObj = JObject.Parse(_client.Sign(token: _token,
+                                                           signatureType: "xades",
+                                                           certid: cert.certid,
+                                                           certpin: "Abc123",
+                                                           profile: "bes",
+                                                           extensions: "lt",
+                                                           parameters: DataForTests.ParametersCades,
+                                                           document: b64file));
+
+                        Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
+                        
+                        break;
+                }
+
+                if (bool.Parse(ConfigurationManager.AppSettings["savesigneddocs"])) SaveDoc(jObj, doc.SignType);
+            }
+
+            Assert.IsTrue(true);
+        }
 
 
 
@@ -275,9 +367,15 @@ namespace UnitTestProjectForIntegrations
 
                         break;
 
-                    default:
+                    case SignatureType.CADES:
 
                         ext = "p7m";
+
+                        break;
+
+                    case SignatureType.XADES:
+
+                        ext = "xml";
 
                         break;
                 }

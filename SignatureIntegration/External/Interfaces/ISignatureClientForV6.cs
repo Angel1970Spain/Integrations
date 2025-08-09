@@ -3,7 +3,6 @@ using SignatureIntegration.Model.Enums;
 using SignatureIntegration.Model.Iv6ClassModel;
 using System;
 using System.Collections.Generic;
-using System.Xml.Linq;
 
 namespace SignatureIntegration.External
 {
@@ -85,6 +84,7 @@ namespace SignatureIntegration.External
         /// <returns></returns>
         SignPadesParams CastThePadesParams(string parameters);
 
+
         /// <summary>
         /// Convierte un string plano en un modelo SignCadesParams
         /// </summary>
@@ -92,7 +92,30 @@ namespace SignatureIntegration.External
         /// <returns></returns>
         SignCadesParams CastTheCadesParams(string parameters);
 
-        
+
+        /// <summary>
+        /// Convierte un string plano en un modelo SignXadesParams
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        SignXadesParams CastTheXadesParams(string parameters);
+
+
+        /// <summary>
+        /// Firmado de documentos. Sobrecarga compatible con la antigua dll
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="signatureType"></param>
+        /// <param name="certid"></param>
+        /// <param name="certpin"></param>
+        /// <param name="profile"></param>
+        /// <param name="extensions"></param>
+        /// <param name="parameters"></param>
+        /// <param name="document"></param>
+        /// <param name="hashAlgType"></param>
+        /// <param name="envelop"></param>
+        /// <param name="detachedsignature"></param>
+        /// <returns>Json con el retorno de la api</returns>
         string Sign
         (
             string token,
@@ -108,13 +131,29 @@ namespace SignatureIntegration.External
             string detachedsignature = ""
         );
 
+
+        /// <summary>
+        /// Firmado de documentos.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="type"></param>
+        /// <param name="certid"></param>
+        /// <param name="certpin"></param>
+        /// <param name="profile"></param>
+        /// <param name="extensions"></param>
+        /// <param name="document"></param>
+        /// <param name="parameters"></param>
+        /// <param name="hashAlgType"></param>
+        /// <param name="envelop"></param>
+        /// <param name="detachedsignature"></param>
+        /// <returns>Json con el retorno de la api</returns>
         string Sign
         (
             string token,
             SignatureType type,
             string certid,
             string certpin,
-            Profile profile,
+            object profile,
             string extensions,
             byte[] document,
             object parameters,

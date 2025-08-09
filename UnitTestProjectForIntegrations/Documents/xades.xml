@@ -1,147 +1,76 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<ape:Certificacion xmlns:ape="urn:correos.es:ape.sne.datos.1.0" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" formatoNuevo="true" version="1.0">
-	<ape:DatosCertificados tipo="ACUSE_DE_RECIBO:ACEPTADA">
-		<ape:MensajeID>1550653646446</ape:MensajeID>
-		<ape:Emisor>
-			<ape:PersonaJuridica>
-				<ape:RazonSocial>Servicio de Notificaciones Electrónicas Pruebas</ape:RazonSocial>
-				<ape:NIF>28972577Y</ape:NIF>
-			</ape:PersonaJuridica>
-		</ape:Emisor>
-		<ape:Asunto>WS 1550653646446</ape:Asunto>
-		<ape:Notificado>
-			<ape:PersonaFisica>
-				<ape:Nombre>BENET RODRÍGUEZ JAVIER</ape:Nombre>
-				<ape:NIF>22579047Q</ape:NIF>
-			</ape:PersonaFisica>
-		</ape:Notificado>
-		<ape:HuellaDigital algoritmo="SHA-1">dJHn87S8vXZytfXnngoVOejicMs=</ape:HuellaDigital>
-		<ape:InformacionEvento tipo="PUESTA_DISPOSICION">
-			<ape:Fecha>2019-02-20T10:07:28+01:00</ape:Fecha>
-		</ape:InformacionEvento>
-		<ape:InformacionEvento tipo="ACUSE_DE_RECIBO:ACEPTADA">
-			<ape:Fecha>2019-02-25T12:15:58+01:00</ape:Fecha>
-			<ape:Receptor>
-				<ape:PersonaFisica>
-					<ape:Nombre>BENET RODRÍGUEZ JAVIER</ape:Nombre>
-					<ape:NIF>22579047Q</ape:NIF>
-				</ape:PersonaFisica>
-			</ape:Receptor>
-		</ape:InformacionEvento>
-		<ape:CodigoVerificacionElectronica>MXGEFCXVfBxqIE5U</ape:CodigoVerificacionElectronica>
-		<ape:TipoMensajeria>NOTIFICACION</ape:TipoMensajeria>
-	</ape:DatosCertificados><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature-1047405619">
-	<ds:SignedInfo>
-		<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-		<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
-		<ds:Reference Id="Reference-209042456" URI="">
-			<ds:Transforms>
-				<ds:Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
-					<ds:XPath xmlns:ds="http://www.w3.org/2000/09/xmldsig#">not(ancestor-or-self::ds:Signature)</ds:XPath>
-				</ds:Transform>
-			</ds:Transforms>
-			<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-			<ds:DigestValue>qSv7/xnCrkYuf+LcRG2vR7p/MsKgtdljgaxfI3vU9Tc=</ds:DigestValue>
-		</ds:Reference>
-		<ds:Reference Id="Reference-1425241330" URI="#KeyInfo-252611911">
-			<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-			<ds:DigestValue>20Pd8+zdlcBp2ZngueA0bHrgJoymbXMFk3sFbigPGEo=</ds:DigestValue>
-		</ds:Reference>
-		<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-954881585">
-			<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-			<ds:DigestValue>kartQfFx4+4rccdMt145aBlMVBud/3btI9egtEuWWXQ=</ds:DigestValue>
-		</ds:Reference>
-	</ds:SignedInfo>
-	<ds:SignatureValue>
-Iw5FrOXXP2kS70iS1JPXMVdgE8Q+baQuqKltmrKQhEbC1cuoRHddGpLR9iA34fwq
-xX/BaYwlCo6kfIoGrfs7gmSFgb9qYP0hvAp6ymdf+8fZZ9lROASMjCQVkCcbveaY
-X+Lpv6RjnvbJXybL3bRMAA9MndYwwCSCvlUB7FtOEEKSfCPoLxE8PBbgbkL/dKeA
-qEWifFlyqsmTrIsVANnTP8Iii6uHvNcRp/JTpPBRaXZO/x88TVbkFF1yvvE9oJL4
-i7x7uKjrLVKw9dlBc7f2rO72FPX1bD5qBbz4zAHMmB5//X9k4VBAEAhRASGMqZBw
-TaVRBgsgwEXgrsV3ZFgk+g==
-	</ds:SignatureValue>
-	<ds:KeyInfo Id="KeyInfo-252611911">
-		<ds:KeyValue>
-			<ds:RSAKeyValue>
-				<ds:Modulus>
-0CfVJwZkD3Pa3a50/82q1a48ozsce0onkD35iHfWapYrBJwIQtJUN0347vz9ojsk
-/zXhkPr8H0smnsHStJZLfJKUL42YQdzRXmxTwmMN5iLH2EhRfgP6/7xZdVxzMecs
-QVqe0jsQkUgMCSdy0JNFBqR7nDd7GoHCbu8MRskM0JYkUJ17g+DY0bSAI1Xw43dP
-fAYKH6Ai3vuUJt1qiY/z8+u4nKKrOHGV+DkNSBfNW73SO/QXNYtdcdeCvY0oxMaJ
-iGam+jjGXiJi6pspntwzx9Pi3RldJlGvg2PO/g9qN3ZaXDbvG0WtiT6eYSXgf83D
-QFRl55tNXEoEE+RHzTGdnQ==
-				</ds:Modulus>
-				<ds:Exponent>AQAB</ds:Exponent>
-			</ds:RSAKeyValue>
-		</ds:KeyValue>
-		<ds:X509Data>
-			<ds:X509IssuerSerial>
-				<ds:X509IssuerName>CN=AC DNIE 004, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES</ds:X509IssuerName>
-				<ds:X509SerialNumber>15993946874589109532084209646470798185</ds:X509SerialNumber>
-			</ds:X509IssuerSerial>
-			<ds:X509SubjectName>CN=Ficticio Activo/ Ciudadano (FIRMA), 2.5.4.42=#0C09436975646164616E6F, 2.5.4.4=#0C08466963746963696F, SERIALNUMBER=99999018D, C=ES</ds:X509SubjectName>
-			<ds:X509Certificate>
-MIIGgDCCBGigAwIBAgIQDAhSdo1/M75bMMTX032baTANBgkqhkiG9w0BAQsFADBc
-MQswCQYDVQQGEwJFUzEoMCYGA1UECgwfRElSRUNDSU9OIEdFTkVSQUwgREUgTEEg
-UE9MSUNJQTENMAsGA1UECwwERE5JRTEUMBIGA1UEAwwLQUMgRE5JRSAwMDQwHhcN
-MTgwNjI1MTAzMjU0WhcNMjMwNjI1MTAzMjU0WjB1MQswCQYDVQQGEwJFUzESMBAG
-A1UEBRMJOTk5OTkwMThEMREwDwYDVQQEDAhGaWN0aWNpbzESMBAGA1UEKgwJQ2l1
-ZGFkYW5vMSswKQYDVQQDDCJGaWN0aWNpbyBBY3Rpdm8vIENpdWRhZGFubyAoRklS
-TUEpMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0CfVJwZkD3Pa3a50
-/82q1a48ozsce0onkD35iHfWapYrBJwIQtJUN0347vz9ojsk/zXhkPr8H0smnsHS
-tJZLfJKUL42YQdzRXmxTwmMN5iLH2EhRfgP6/7xZdVxzMecsQVqe0jsQkUgMCSdy
-0JNFBqR7nDd7GoHCbu8MRskM0JYkUJ17g+DY0bSAI1Xw43dPfAYKH6Ai3vuUJt1q
-iY/z8+u4nKKrOHGV+DkNSBfNW73SO/QXNYtdcdeCvY0oxMaJiGam+jjGXiJi6psp
-ntwzx9Pi3RldJlGvg2PO/g9qN3ZaXDbvG0WtiT6eYSXgf83DQFRl55tNXEoEE+RH
-zTGdnQIDAQABo4ICIzCCAh8wDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQUuQP/wE+f
-1kz1u1eJc4Cs3jtD9pQwHwYDVR0jBBgwFoAU68YvhOEXF6sG8ECM6q9CTvExzRow
-gbwGCCsGAQUFBwEDBIGvMIGsMAgGBgQAjkYBATAIBgYEAI5GAQQwEwYGBACORgEG
-MAkGBwQAjkYBBgEwdAYGBACORgEFMGowMxYtaHR0cHM6Ly9wa2kucG9saWNpYS5l
-cy9kbmllL3B1YmxpY2FjaW9uZXMvcGRzEwJlbjAzFi1odHRwczovL3BraS5wb2xp
-Y2lhLmVzL2RuaWUvcHVibGljYWNpb25lcy9wZHMTAmVzMAsGBgQAjkYBAwIBDzBn
-BggrBgEFBQcBAQRbMFkwHwYIKwYBBQUHMAGGE2h0dHA6Ly9vY3NwLmRuaWUuZXMw
-NgYIKwYBBQUHMAKGKmh0dHA6Ly9wa2kucG9saWNpYS5lcy9kbmllL2NlcnRzL0FD
-MDA0LmNydDCBlgYDVR0gBIGOMIGLMIGIBghghVQBAgICAzB8MDgGCCsGAQUFBwIB
-FixodHRwOi8vcGtpLnBvbGljaWEuZXMvZG5pZS9wdWJsaWNhY2lvbmVzL2RwYzBA
-BggrBgEFBQcCAjA0DDJESVJFQ0NJw5NOIEdFTkVSQUwgREUgTEEgUE9MSUPDjUEs
-IFZBVEVTLVMyODE2MDE1SDAOBgNVHQ8BAf8EBAMCBkAwDQYJKoZIhvcNAQELBQAD
-ggIBAMAefT2aRNjurGp+pwu11nHvyuFwhDTwRgtJFouMKiRA2uJewjsgGloLVkLO
-zxTilSF7jfmZuoXGsMq8HM4dFBqGV+b2xRiv25s8zjOLk2FcMW7uMaJfgwdvENDi
-uuDU5SYPHEe/uDkpQU6WTDuZ9kGml0hPUvAmo4dypgMPT29rp6dPILMu3SpCUS9G
-F6aibFnroHJMgKMTIv0QgxJRr5ABUH5rpZLLPfbcxtBg/DHfgcs6T6IqxTdh7xSd
-2Y0SCLzIb4m0T9CD96tAQ8AJtmEDYr6Dd+AXqP3pdiD2kw8Ct6B2VJXXMOAbMDOR
-6zId56XeR8JoLXTU18HjyEO0Z1Wgo83kyrcceSoX7GDiwMualynJKxs/Ftdq6RaL
-MjVsvohjDbd0sGmZIIF55AwOlkNZv5P4vZbG0NVq+bw0YtDLrAKvz4DcLwVcSltu
-COxmw+YFfQLejxb0EyCJT5UEiS3U+C5uEGwe1jW74JY7gSgOUOgF+auUNWIOgRWR
-BXJQVDCPekz74G25QGfq+6yh34MPlfjrYIa8VYbTXtQVv3lIldiS4qh0v3eQSNqo
-A2z+1OeQofXtWiTfEqXyhXXPMZE+awcWPCOhVyhrshGc3E7ZodIjryRkVuPtIZe3
-uGml7mLc7Rf+PNGR105O1cY7SiV9dncVxpSUvkpqFgEpATFq
-			</ds:X509Certificate>
-		</ds:X509Data>
-	</ds:KeyInfo>
-	<ds:Object>
-		<xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#Signature-1047405619">
-			<xades:SignedProperties Id="SignedProperties-954881585">
-				<xades:SignedSignatureProperties>
-					<xades:SigningTime>2019-04-22T10:49:38.034Z</xades:SigningTime>
-					<xades:SigningCertificate>
-						<xades:Cert>
-							<xades:CertDigest>
-								<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-								<ds:DigestValue>h5tGv3AOpivHco/+Dw69wbJUPe4=</ds:DigestValue>
-							</xades:CertDigest>
-							<xades:IssuerSerial>
-								<ds:X509IssuerName>CN=AC DNIE 004, OU=DNIE, O=DIRECCION GENERAL DE LA POLICIA, C=ES</ds:X509IssuerName>
-								<ds:X509SerialNumber>15993946874589109532084209646470798185</ds:X509SerialNumber>
-							</xades:IssuerSerial>
-						</xades:Cert>
-					</xades:SigningCertificate>
-				</xades:SignedSignatureProperties>
-				<xades:SignedDataObjectProperties>
-					<xades:DataObjectFormat ObjectReference="#Reference-209042456"/>
-				</xades:SignedDataObjectProperties>
-			</xades:SignedProperties>
-		</xades:QualifyingProperties>
-	</ds:Object>
-</ds:Signature>
-</ape:Certificacion>
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<SalesReport Id="SalesReport-2005-06" xmlns="urn:example:sales">
+  <Company>
+    <Name>Comercial Ficticia S.A.</Name>
+    <Address>Calle Inventada 123, Madrid, España</Address>
+    <VATNumber>ESB12345678</VATNumber>
+  </Company>
+  <Period>
+    <Month>06</Month>
+    <Year>2005</Year>
+  </Period>
+  <Summary>
+    <TotalSales currency="EUR">152345.75</TotalSales>
+    <TotalInvoices>325</TotalInvoices>
+    <TopProduct>Impresora Láser X200</TopProduct>
+  </Summary>
+  <Invoices>
+    <Invoice Id="INV-2005-06-001">
+      <Date>2005-06-01</Date>
+      <Customer>
+        <Name>Ofimática López</Name>
+        <VATNumber>ESA12345678</VATNumber>
+      </Customer>
+      <Lines>
+        <Line>
+          <Description>Ordenador Portátil Modelo Alpha</Description>
+          <Qty>5</Qty>
+          <Price>750.00</Price>
+        </Line>
+        <Line>
+          <Description>Monitor LCD 19"</Description>
+          <Qty>5</Qty>
+          <Price>199.99</Price>
+        </Line>
+      </Lines>
+    </Invoice>
+    <Invoice Id="INV-2005-06-078">
+      <Date>2005-06-15</Date>
+      <Customer>
+        <Name>Papelería El Rápido</Name>
+        <VATNumber>ESB98765432</VATNumber>
+      </Customer>
+      <Lines>
+        <Line>
+          <Description>Paquete de Papel A4 (500 hojas)</Description>
+          <Qty>50</Qty>
+          <Price>3.50</Price>
+        </Line>
+        <Line>
+          <Description>Tóner Impresora Láser X200</Description>
+          <Qty>10</Qty>
+          <Price>75.00</Price>
+        </Line>
+      </Lines>
+    </Invoice>
+    <Invoice Id="INV-2005-06-203">
+      <Date>2005-06-28</Date>
+      <Customer>
+        <Name>Consultores Informáticos S.L.</Name>
+        <VATNumber>ESC11223344</VATNumber>
+      </Customer>
+      <Lines>
+        <Line>
+          <Description>Servidor Rack 2U</Description>
+          <Qty>1</Qty>
+          <Price>4200.00</Price>
+        </Line>
+        <Line>
+          <Description>Disco Duro 1TB</Description>
+          <Qty>4</Qty>
+          <Price>150.00</Price>
+        </Line>
+      </Lines>
+    </Invoice>
+  </Invoices>
+</SalesReport>

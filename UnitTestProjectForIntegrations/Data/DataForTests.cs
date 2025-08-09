@@ -14,6 +14,10 @@ namespace UnitTestProjectForIntegrations.Data
 
         internal static string CheckCastParsCades = @"{""tstampservers"":null,""policy"":null,""includewholechain"":false,""addsigningcertificatev2"":false}";
 
+        internal static string ParametersXades = @"";
+
+        internal static string CheckCastParsXades = @"{""signerrole"":null,""includewholechain"":false,""includekeyvalue"":false,""xadesversion"":2,""location"":null,""policy"":null,""tstampservers"":null,""envreferencetosign"":null,""envsigdestreference"":null,""envnamespacelist"":null,""envreferencetosignns"":null}";
+
         internal static List<Document> Documents = new List<Document>
         {
             new Document("cades.txt", SignatureType.CADES ),

@@ -11,9 +11,19 @@ namespace SignatureIntegration.Model.Enums
         SHA1, SHA256, SHA512, MD5
     }
 
-    public enum Profile
+    public enum ProfilePades
     {
-        BASIC, T, ENHANCED
+        BASIC, ENHANCED
+    }
+
+    public enum ProfileCades
+    {
+       CMS, T, C, X, XL
+    }
+
+    public enum ProfileXades
+    {
+        XMLDSIG, BES, EPES, T, C, XL, A
     }
 
     public enum SignatureType

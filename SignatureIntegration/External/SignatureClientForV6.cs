@@ -78,11 +78,6 @@ namespace SignatureIntegration.External
             return tokens.Item1;
         }
 
-
-
-
-
-
         public Tuple<string, string> GetTokens(
             string orgaid,
             string login,
@@ -127,6 +122,8 @@ namespace SignatureIntegration.External
 
 
 
+
+
         public List<Certificate> GetCertificates
         (
             string userid, 
@@ -152,6 +149,8 @@ namespace SignatureIntegration.External
 
 
 
+
+
         public SignPadesParams CastThePadesParams(string parameters) 
         {
             return _auxLogic.GetSignPadesParams(parameters);
@@ -161,6 +160,14 @@ namespace SignatureIntegration.External
         {
             return _auxLogic.GetSignCadesParams(parameters);
         }
+
+        public SignXadesParams CastTheXadesParams(string parameters)
+        {
+            return _auxLogic.GetSignXadesParams(parameters);
+        }
+
+
+
 
 
         public string Sign
@@ -180,15 +187,28 @@ namespace SignatureIntegration.External
         {
             SignatureType o_type = (SignatureType)Enum.Parse(typeof(SignatureType), signatureType, ignoreCase: true);
 
-            Profile o_profile = (Profile)Enum.Parse(typeof(Profile), profile, ignoreCase: true);
-
             object o_params = null;
+            object o_profile = null;
 
             switch (o_type) 
             {
-                case SignatureType.PADES: o_params = _auxLogic.GetSignPadesParams(parameters); break;
-                case SignatureType.CADES: o_params = _auxLogic.GetSignCadesParams(parameters); break;
-                case SignatureType.XADES: break;
+                case SignatureType.PADES:
+
+                    o_params = _auxLogic.GetSignPadesParams(parameters);
+                    o_profile = (ProfilePades)Enum.Parse(typeof(ProfilePades), profile, ignoreCase: true);
+                    break;
+
+                case SignatureType.CADES: 
+
+                    o_params = _auxLogic.GetSignCadesParams(parameters);
+                    o_profile = (ProfileCades)Enum.Parse(typeof(ProfileCades), profile, ignoreCase: true);
+                    break;
+
+                case SignatureType.XADES: 
+
+                    o_params = _auxLogic.GetSignXadesParams(parameters);
+                    o_profile = (ProfileXades)Enum.Parse(typeof(ProfileXades), profile, ignoreCase: true);
+                    break;
             }
 
             byte[] o_document = Convert.FromBase64String(document);
@@ -204,7 +224,7 @@ namespace SignatureIntegration.External
             SignatureType type,
             string certid,
             string certpin,
-            Profile profile,
+            object profile,
             string extensions,
             byte[] document,
             object parameters = null,
@@ -226,7 +246,7 @@ namespace SignatureIntegration.External
                     {
                         cert = new Cert { certid = certid, pin = certpin },
                         document = document,
-                        profile = profile.ToString().ToLower(),
+                        profile = ((ProfilePades)profile).ToString().ToLower(),
                         hashalgorithm = hashAlgType.ToString().ToLower(),
                         parameters = parameters as SignPadesParams,
                         asyncdata = string.IsNullOrWhiteSpace(detachedsignature) ? null : Convert.FromBase64String(detachedsignature),
@@ -246,7 +266,7 @@ namespace SignatureIntegration.External
                     {
                         cert = new Cert { certid = certid, pin = certpin },
                         document = document,
-                        profile = profile.ToString().ToLower(),
+                        profile = ((ProfileCades)profile).ToString().ToLower(),
                         hashalgorithm = HashAlgType.SHA256.ToString().ToLower(),
                         parameters = parameters as SignCadesParams,
                         signdata = string.IsNullOrWhiteSpace(detachedsignature) ? null : Convert.FromBase64String(detachedsignature),
@@ -255,18 +275,33 @@ namespace SignatureIntegration.External
                         envelop = envelop
                     };
 
-                    var str = JsonConvert.SerializeObject(bodyc);
-
                     jsonBody = JObject.FromObject(bodyc);
 
                     break;
 
                 case SignatureType.XADES:
 
-                    return "";
-            }
+                    endpoint = new Uri(_baseUri, _endpoints["SIGN_XADES"]);
 
-            
+                    var bodyx = new SignatureXades
+                    {
+                        cert = new Cert { certid = certid, pin = certpin },
+                        document = document,
+                        profile = ((ProfileXades)profile).ToString().ToLower(),
+                        hashalgorithm = HashAlgType.SHA256.ToString().ToLower(),
+                        parameters = parameters as SignXadesParams,
+                        signdata = string.IsNullOrWhiteSpace(detachedsignature) ? null : Convert.FromBase64String(detachedsignature),
+                        extension = extensions,
+                        operation = "sign",
+                        envelop = envelop
+                    };
+
+                    var str = JsonConvert.SerializeObject(bodyx);
+
+                    jsonBody = JObject.FromObject(bodyx);
+
+                    break;
+            }
 
             var ojson = _connector.PostAsync(endpoint, jsonBody, token).GetAwaiter().GetResult();
 
