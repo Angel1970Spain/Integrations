@@ -152,11 +152,15 @@ namespace SignatureIntegration.External
 
 
 
-        public SignPadesParams CastTheParams(string parameters) 
+        public SignPadesParams CastThePadesParams(string parameters) 
         {
             return _auxLogic.GetSignPadesParams(parameters);
         }
 
+        public SignCadesParams CastTheCadesParams(string parameters)
+        {
+            return _auxLogic.GetSignCadesParams(parameters);
+        }
 
 
         public string Sign
@@ -178,7 +182,14 @@ namespace SignatureIntegration.External
 
             Profile o_profile = (Profile)Enum.Parse(typeof(Profile), profile, ignoreCase: true);
 
-            SignPadesParams o_params = _auxLogic.GetSignPadesParams(parameters);
+            object o_params = null;
+
+            switch (o_type) 
+            {
+                case SignatureType.PADES: o_params = _auxLogic.GetSignPadesParams(parameters); break;
+                case SignatureType.CADES: o_params = _auxLogic.GetSignCadesParams(parameters); break;
+                case SignatureType.XADES: break;
+            }
 
             byte[] o_document = Convert.FromBase64String(document);
 
@@ -196,14 +207,14 @@ namespace SignatureIntegration.External
             Profile profile,
             string extensions,
             byte[] document,
-            SignPadesParams parameters = null,
+            object parameters = null,
             HashAlgType hashAlgType = HashAlgType.SHA256,
             string envelop = "",
             string detachedsignature = ""
         )
         {
             Uri endpoint = null;
-            SignaturePades body = null;
+            JObject jsonBody = null;
 
             switch (type) 
             {
@@ -211,17 +222,19 @@ namespace SignatureIntegration.External
 
                     endpoint = new Uri(_baseUri, _endpoints["SIGN_PADES"]);
 
-                    body = new SignaturePades 
+                    var bodyp = new SignaturePades 
                     {
                         cert = new Cert { certid = certid, pin = certpin },
                         document = document,
                         profile = profile.ToString().ToLower(),
                         hashalgorithm = hashAlgType.ToString().ToLower(),
-                        parameters = parameters,
+                        parameters = parameters as SignPadesParams,
                         asyncdata = string.IsNullOrWhiteSpace(detachedsignature) ? null : Convert.FromBase64String(detachedsignature),
                         extension = extensions,
                         operation = "sign"
                     };
+
+                    jsonBody = JObject.FromObject(bodyp);
 
                     break;
 
@@ -229,17 +242,20 @@ namespace SignatureIntegration.External
 
                     endpoint = new Uri(_baseUri, _endpoints["SIGN_CADES"]);
 
-                    body = new SignaturePades
+                    var bodyc = new SignatureCades
                     {
                         cert = new Cert { certid = certid, pin = certpin },
                         document = document,
                         profile = profile.ToString().ToLower(),
                         hashalgorithm = HashAlgType.SHA256.ToString().ToLower(),
-                        parameters = parameters,
-                        asyncdata = string.IsNullOrWhiteSpace(detachedsignature) ? null : Convert.FromBase64String(detachedsignature),
+                        parameters = parameters as SignCadesParams,
+                        signdata = string.IsNullOrWhiteSpace(detachedsignature) ? null : Convert.FromBase64String(detachedsignature),
                         extension = extensions,
-                        operation = "sign"
+                        operation = "sign",
+                        envelop = envelop
                     };
+
+                    jsonBody = JObject.FromObject(bodyc);
 
                     break;
 
@@ -248,7 +264,7 @@ namespace SignatureIntegration.External
                     return "";
             }
 
-            var jsonBody = JObject.FromObject(body);
+            
 
             var ojson = _connector.PostAsync(endpoint, jsonBody, token).GetAwaiter().GetResult();
 

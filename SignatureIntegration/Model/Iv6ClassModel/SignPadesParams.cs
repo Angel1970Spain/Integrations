@@ -19,7 +19,7 @@ namespace SignatureIntegration.Model.Iv6ClassModel
         /// <summary>
         /// IvSign time stamp server information object, if it is not specified and the signature requires it, the default one will be used
         /// </summary>
-        public TimestampServerInfo[] tstampservers { get; set; }
+        public TimeStampServerInfo[] tstampservers { get; set; }
 
         /// <summary>
         /// IvSign biometric data object

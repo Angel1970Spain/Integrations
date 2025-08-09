@@ -10,26 +10,13 @@ using System.Collections.Specialized;
 using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Runtime.ConstrainedExecution;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Security.Cryptography;
-using System.Text.RegularExpressions;
 using UnitTestProjectForIntegrations.Data;
-
 
 namespace UnitTestProjectForIntegrations
 {
     [TestClass]
     public class UnitTest1
     {
-
-
-        private class Doc
-        {
-            internal SignatureType SignType { get; set; }
-            internal string Path { get; set; }
-        }
-
 
         private ISignatureClientForV6 _client;
 
@@ -43,6 +30,9 @@ namespace UnitTestProjectForIntegrations
             var endpoints = GetEndpoints();
 
             _client = new SignatureClientForV6(uri, endpoints);
+
+            DataForTests.Documents
+                .ForEach(d => d.Path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Documents", d.Name));
         }
 
         private Dictionary<string, Uri> GetEndpoints() 
@@ -175,9 +165,13 @@ namespace UnitTestProjectForIntegrations
         {
             try
             {
-                var json = JsonConvert.SerializeObject( _client.CastTheParams(DataForTests.ParametersPades));
+                var jsonPades = JsonConvert.SerializeObject( _client.CastThePadesParams(DataForTests.ParametersPades));
 
-                Assert.AreEqual(json, DataForTests.JsonCastParsCades, "El casteo no se corresponde con el esperado");
+                var jsonCades = JsonConvert.SerializeObject(_client.CastTheCadesParams(DataForTests.ParametersCades));
+
+                Assert.AreEqual(jsonPades, DataForTests.CheckCastParsPades, "El casteo para el documento Pades no se corresponde con el esperado");
+                
+                Assert.AreEqual(jsonCades, DataForTests.CheckCastParsCades, "El casteo para el documento Cades no se corresponde con el esperado");
             }
             catch (Exception ex)
             {
@@ -205,40 +199,44 @@ namespace UnitTestProjectForIntegrations
 
             Certificate cert = _certs.First();
 
-            var documents = GetConfDocs();
-
-            foreach (var doc in documents.Where(x => x.SignType == SignatureType.CADES).Take(1)) 
+            foreach (var doc in DataForTests.Documents.Where(x => x.SignType == SignatureType.CADES).Take(1)) 
             {
                 var file = File.ReadAllBytes(doc.Path);
 
                 var b64 = Convert.ToBase64String(file);
 
-                string signed = "";
+                JObject jObj = null;
 
                 switch (doc.SignType) 
                 {
                     case SignatureType.PADES:
 
-                        signed = _client.Sign(token: _token,
-                                              type: doc.SignType,
-                                              certid: cert.certid,
-                                              certpin: "Abc123",
-                                              profile: Profile.ENHANCED,
-                                              extensions: "lt",
-                                              document: file,
-                                              parameters: _client.CastTheParams(DataForTests.ParametersPades));
+                        jObj = JObject.Parse( _client.Sign(token: _token,
+                                                           type: doc.SignType,
+                                                           certid: cert.certid,
+                                                           certpin: "Abc123",
+                                                           profile: Profile.ENHANCED,
+                                                           extensions: "lt",
+                                                           parameters: _client.CastThePadesParams(DataForTests.ParametersPades),
+                                                           document: file));
+
+                        Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
+
                         break;
 
                     case SignatureType.CADES:
 
-                        signed = _client.Sign(token: _token,
-                                              type: doc.SignType,
-                                              certid: cert.certid,
-                                              certpin: "Abc123",
-                                              profile: Profile.T,
-                                              extensions: "lt",
-                                              document: file, 
-                                              parameters: null);
+                        jObj = JObject.Parse( _client.Sign(token: _token,
+                                                           type: doc.SignType,
+                                                           certid: cert.certid,
+                                                           certpin: "Abc123",
+                                                           profile: Profile.T,
+                                                           extensions: "lt",
+                                                           parameters: _client.CastThePadesParams(DataForTests.ParametersCades),
+                                                           document: file));
+
+                        Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
+
                         break;
 
                     case SignatureType.XADES:
@@ -246,7 +244,7 @@ namespace UnitTestProjectForIntegrations
                         break;
                 }
 
-                SaveDoc(signed, doc.SignType);
+                if( bool.Parse(ConfigurationManager.AppSettings["savesigneddocs"]) ) SaveDoc(jObj, doc.SignType);
             } 
 
             Assert.IsTrue(true);
@@ -261,13 +259,11 @@ namespace UnitTestProjectForIntegrations
 
         #region privathe methods
 
-        private void SaveDoc(string signed, SignatureType stype) 
+        private void SaveDoc(JObject jObj, SignatureType stype) 
         {
-            if (string.IsNullOrEmpty(signed)) return;
-
             try
             {
-                byte[] pdfBytes = Convert.FromBase64String((JObject.Parse(signed))["data"]?.ToString());
+                byte[] pdfBytes = Convert.FromBase64String(jObj["data"]?.ToString());
 
                 string ext = "";
 
@@ -285,29 +281,16 @@ namespace UnitTestProjectForIntegrations
 
                         break;
                 }
-                                
-                File.WriteAllBytes($"c:/work/z_testdocs/{DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss")}.{ext}", pdfBytes);
+
+                string filepath = 
+                    Path.Combine(ConfigurationManager.AppSettings["ouputdirectory"], $"{DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss")}.{ext}")
+                    .Replace('/', Path.DirectorySeparatorChar)
+                    .Replace('\\', Path.DirectorySeparatorChar);
+
+                Directory.CreateDirectory(Path.GetDirectoryName(filepath));
+                File.WriteAllBytes(filepath, pdfBytes);
             }
             catch { }
-        }
-
-
-        private List<Doc> GetConfDocs()
-        {
-            List<Doc> documents = new List<Doc>();
-
-            var confDocs = ConfigurationManager.GetSection("documents") as NameValueCollection;
-
-            foreach (var key in confDocs.AllKeys)
-            {
-                documents.Add(new Doc
-                {
-                    SignType = (SignatureType)Enum.Parse(typeof(SignatureType), confDocs[key], ignoreCase: true),
-                    Path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Documents", key)
-                });
-            }
-
-            return documents;
         }
 
         #endregion privathe methods

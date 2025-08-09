@@ -1,11 +1,10 @@
-﻿
-using SignatureIntegration.Model.Iv6ClassModel;
+﻿using SignatureIntegration.Model.Iv6ClassModel;
 
 namespace SignatureIntegration.Model
 {
-    public class SignaturePades
+    public class SignatureXades
     {
-        public SignaturePades() { }
+        public SignatureXades() { }
 
         /// <summary>
         /// * Requerido
@@ -21,7 +20,7 @@ namespace SignatureIntegration.Model
         /// <summary>
         /// Signature in detached mode
         /// </summary>
-        public byte[] asyncdata { get; set; }
+        public byte[] signdata { get; set; }
 
         /// <summary>
         /// * Requerido
@@ -30,19 +29,22 @@ namespace SignatureIntegration.Model
         public string profile { get; set; }
 
         /// <summary>
+        ///  Signature options, for example: 'digestdetached' to embed the document as messagedigest reference in signedinfo,
+        /// 'codice' to detect and sign codice documents.
+        /// </summary>
+        public string extension { get; set; }
+
+        /// <summary>
         /// Hash algorithm: 'SHA1', 'SHA256', 'SHA512' or 'MD5', SHA1 by default
         /// </summary>
         public string hashalgorithm { get; set; }
 
         /// <summary>
-        /// Signature extensions, separated by coma: 
-        ///     't'        = Include TimeStamp into the signature, 
-        ///     'timestamp'= Add a TimeStamp to the signature (Long Term Validation), 
-        ///     'epes'     = Include signature policy, 
-        ///     'biometry' = Include biometric data, 
-        ///     'revinfo'  = Include certificate revocation information
+        /// Signature format: 
+        ///     'enveloped'  = The signature includes the original XML document, 
+        ///     'enveloping' = A new XML document is generated with the original XML document on one of its nodes
         /// </summary>
-        public string extension { get; set; }
+        public string envelop { get; set; }
 
         /// <summary>
         /// Kind of operation to perform: sign, cosign, upgrade, append...
@@ -55,14 +57,13 @@ namespace SignatureIntegration.Model
         public string[][] extradata { get; set; }
 
         /// <summary>
-        /// IvSign signature complementary PAdES parameters
+        /// IvSign signature complementary XAdES parameters
         /// </summary>
-        public SignPadesParams parameters { get; set; }
+        public SignXadesParameters parameters { get; set; }
 
         /// <summary>
         /// IvSign caller object
         /// </summary>
         public Caller caller { get; set; }
-
     }
 }

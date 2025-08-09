@@ -1,7 +1,6 @@
 ﻿using SignatureIntegration.Model.Iv6ClassModel;
 using System;
 using System.Linq;
-using System.Text;
 
 namespace SignatureIntegration.InternalLogic
 {
@@ -12,8 +11,6 @@ namespace SignatureIntegration.InternalLogic
 
         internal SignPadesParams GetSignPadesParams(string parameters) 
         {
-            if (string.IsNullOrWhiteSpace(parameters)) throw new Exception("Parameters cannot be null or empty.");
-
             var spp = new SignPadesParams 
             { 
                 pdfparameters = new PDFSignParams 
@@ -26,7 +23,7 @@ namespace SignatureIntegration.InternalLogic
             {
                 var keyval = par.Split( new char[] { '=' }, 2);
                 var key = keyval[0].ToLower();
-                var val = keyval.Count() > 0 ? keyval[1] : "";
+                var val = keyval.Count() > 1 ? keyval[1] : "";
 
                 switch (key)
                 {
@@ -59,15 +56,40 @@ namespace SignatureIntegration.InternalLogic
             return spp;
         }
 
-        private TimestampServerInfo[] GetTimestampServerInfoPars(string tsa)
+        internal SignCadesParams GetSignCadesParams(string parameters)
         {
-            TimestampServerInfo tsaserver = new TimestampServerInfo();
+            SignCadesParams cpp = new SignCadesParams 
+            { 
+                policy = new SignPolicy() 
+            };
+
+            foreach (var par in parameters.Split(';'))
+            {
+                var keyval = par.Split(new char[] { '=' }, 2);
+                var key = keyval[0].ToLower();
+                var val = keyval.Count() > 1 ? keyval[1] : "";
+
+                switch (key.ToLower())
+                {
+                    case "policy": cpp.policy = GetSignPolicyPars(val); break;
+                    case "tsaparameters": cpp.tstampservers = GetTimestampServerInfoPars(val); break;
+                    default: break;
+                }
+            }
+
+            return cpp;
+        }
+
+
+        private TimeStampServerInfo[] GetTimestampServerInfoPars(string tsa)
+        {
+            TimeStampServerInfo tsaserver = new TimeStampServerInfo();
 
             foreach (var par in tsa.Split(','))
             {
                 var keyval = par.Split(new char[] { '=' }, 2);
                 var key = keyval[0].ToLower();
-                var val = keyval.Count() > 0 ? keyval[1] : "";
+                var val = keyval.Count() > 1 ? keyval[1] : "";
 
                 switch (key)
                 {
@@ -86,7 +108,7 @@ namespace SignatureIntegration.InternalLogic
                 }
             }
 
-            return new TimestampServerInfo[] { tsaserver };
+            return new TimeStampServerInfo[] { tsaserver };
         }
 
         private SignPolicy GetSignPolicyPars(string valor)
@@ -97,7 +119,7 @@ namespace SignatureIntegration.InternalLogic
             {
                 var keyval = par.Split(new char[] { '=' }, 2);
                 var key = keyval[0].ToLower();
-                var val = keyval.Count() > 0 ? keyval[1] : "";
+                var val = keyval.Count() > 1 ? keyval[1] : "";
 
                 switch (key)
                 {

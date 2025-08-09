@@ -83,9 +83,16 @@ namespace SignatureIntegration.External
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        SignPadesParams CastTheParams(string parameters);
+        SignPadesParams CastThePadesParams(string parameters);
 
+        /// <summary>
+        /// Convierte un string plano en un modelo SignCadesParams
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        SignCadesParams CastTheCadesParams(string parameters);
 
+        
         string Sign
         (
             string token,
@@ -110,7 +117,7 @@ namespace SignatureIntegration.External
             Profile profile,
             string extensions,
             byte[] document,
-            SignPadesParams parameters = null,
+            object parameters,
             HashAlgType hashAlgType = HashAlgType.SHA256,
             string envelop = "",
             string detachedsignature = ""
