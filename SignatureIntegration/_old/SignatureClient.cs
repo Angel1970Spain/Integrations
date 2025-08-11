@@ -244,7 +244,7 @@ namespace SignatureIntegration
 			switch (signatureType.ToLower()) {
 
 				case "pades":
-					var requestpades = new VerifyPades() {
+					var requestpades = new old_VerifyPades() {
 						document = document,
 						options = parameters,
 						password = documentpassword,
@@ -253,7 +253,7 @@ namespace SignatureIntegration
 					response = Rester.Json.Deserialize<dynamic>(restclient.post(Rester.endpoints.verifypades, requestpades, headers));
 					break;
 				case "xades":
-					var requestxades = new VerifyXades() {
+					var requestxades = new old_VerifyXades() {
 						document = document,
 						options = parameters,
 						detachedsignature = string.IsNullOrWhiteSpace(detachedsignature) ? null : Convert.FromBase64String(detachedsignature),
@@ -263,7 +263,7 @@ namespace SignatureIntegration
 					response = Rester.Json.Deserialize<dynamic>(restclient.post(Rester.endpoints.verifyxades, requestxades, headers));
 					break;
 				case "cades":
-					var requestcades = new VerifyCades() {
+					var requestcades = new old_VerifyCades() {
 						document = document,
 						options = parameters,
 						detachedsignature = string.IsNullOrWhiteSpace(detachedsignature) ? null : Convert.FromBase64String(detachedsignature)

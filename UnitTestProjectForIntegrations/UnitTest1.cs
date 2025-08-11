@@ -11,6 +11,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using UnitTestProjectForIntegrations.Data;
+using UnitTestProjectForIntegrations.Model;
 
 namespace UnitTestProjectForIntegrations
 {
@@ -35,28 +36,8 @@ namespace UnitTestProjectForIntegrations
                 .ForEach(d => d.Path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Documents", d.Name));
         }
 
-        private Dictionary<string, Uri> GetEndpoints() 
-        {
-            var endpointsSection = (NameValueCollection)ConfigurationManager.GetSection("endpoints");
-
-            var endpoints = endpointsSection.AllKeys
-                .ToDictionary(key => key, key => new Uri(endpointsSection[key], UriKind.Relative));
-
-            return endpoints;
-        }
 
 
-
-
-
-
-        [TestMethod]
-        public void Test()
-        {
-            var r = _client.CheckTest();
-
-            Assert.AreEqual(true, r);
-        }
 
 
 
@@ -133,13 +114,9 @@ namespace UnitTestProjectForIntegrations
                 if (string.IsNullOrEmpty(_token)) 
                 {
                     GetToken();
-
-                    if (string.IsNullOrEmpty(_token))
-                    {
-                        Assert.Fail("El AccessToken no debe ser null ni cadena vacía.");
-                        return;
-                    } 
+                    if (string.IsNullOrEmpty(_token)) { Assert.Fail("El AccessToken no debe ser null ni cadena vacía."); return; } 
                 }
+
 
                 string orgaid = ConfigurationManager.AppSettings["orgaid"];
                 string userid = ConfigurationManager.AppSettings["login"];
@@ -187,171 +164,240 @@ namespace UnitTestProjectForIntegrations
 
 
 
-        [TestMethod]
-        public void SignDocs()
-        {
-            if (_certs == null || _certs.Count == 0) 
-            {
-                GetCertificates();
-
-                if (_certs == null || _certs.Count == 0)
-                {
-                    Assert.Fail("La lista de certificados no debe ser null o no puede está vacía.");
-                    return;
-                }
-            }
-
-            Certificate cert = _certs.First();
-
-            foreach (var doc in DataForTests.Documents)//.Where(x => x.SignType == SignatureType.XADES).Take(1)) 
-            {
-                var file = File.ReadAllBytes(doc.Path);
-
-                JObject jObj = null;
-
-                switch (doc.SignType) 
-                {
-                    case SignatureType.PADES:
-
-                        jObj = JObject.Parse( _client.Sign(token: _token,
-                                                           type: doc.SignType,
-                                                           certid: cert.certid,
-                                                           certpin: "Abc123",
-                                                           profile: ProfilePades.ENHANCED,
-                                                           extensions: "lt",
-                                                           parameters: _client.CastThePadesParams(DataForTests.ParametersPades),
-                                                           document: file));
-
-                        Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
-
-                        break;
-
-                    case SignatureType.CADES:
-
-                        jObj = JObject.Parse( _client.Sign(token: _token,
-                                                           type: doc.SignType,
-                                                           certid: cert.certid,
-                                                           certpin: "Abc123",
-                                                           profile: ProfileCades.T,
-                                                           extensions: "lt",
-                                                           parameters: _client.CastTheCadesParams(DataForTests.ParametersCades),
-                                                           document: file));
-
-                        Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
-
-                        break;
-
-                    case SignatureType.XADES:
-
-                        jObj = JObject.Parse(_client.Sign(token: _token,
-                                                           type: doc.SignType,
-                                                           certid: cert.certid,
-                                                           certpin: "Abc123",
-                                                           profile: ProfileXades.BES,
-                                                           extensions: "lt",
-                                                           parameters: _client.CastTheXadesParams(DataForTests.ParametersCades),
-                                                           document: file));
-
-                        Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
-
-                        break;
-                }
-
-                if( bool.Parse(ConfigurationManager.AppSettings["savesigneddocs"]) ) SaveDoc(jObj, doc.SignType);
-            } 
-
-            Assert.IsTrue(true);
-        }
-
-
-
-
 
         [TestMethod]
         public void SignDocs_Compatible()
         {
-            if (_certs == null || _certs.Count == 0)
+            try
             {
-                GetCertificates();
-
                 if (_certs == null || _certs.Count == 0)
                 {
-                    Assert.Fail("La lista de certificados no debe ser null o no puede está vacía.");
-                    return;
+                    GetCertificates();
+                    if (_certs == null || _certs.Count == 0) { Assert.Fail("La lista de certificados no debe ser null o no puede está vacía."); return; }
                 }
-            }
 
-            Certificate cert = _certs.First();
 
-            foreach (var doc in DataForTests.Documents)//.Where(x => x.SignType == SignatureType.PADES).Take(1)) 
-            {
-                var b64file = Convert.ToBase64String(File.ReadAllBytes(doc.Path));
+                Certificate cert = _certs.First();
 
-                JObject jObj = null;
-
-                switch (doc.SignType)
+                foreach (var doc in DataForTests.Documents)//.Where(x => x.SignType == SignatureType.PADES).Take(1)) 
                 {
-                    case SignatureType.PADES:
+                    var b64file = Convert.ToBase64String(File.ReadAllBytes(doc.Path));
 
-                        jObj = JObject.Parse(_client.Sign(token: _token,
-                                                          signatureType: "pades",
-                                                          certid: cert.certid,
-                                                          certpin: "Abc123",
-                                                          profile: "enhanced",
-                                                          extensions: "lt",
-                                                          parameters: DataForTests.ParametersPades,
-                                                          document: b64file));
+                    JObject jObj = null;
 
-                        Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
+                    switch (doc.SignType)
+                    {
+                        case SignatureType.PADES:
 
-                        break;
+                            jObj = JObject.Parse(_client.Sign(token: _token,
+                                                              signatureType: "pades",
+                                                              certid: cert.certid,
+                                                              certpin: "Abc123",
+                                                              profile: "enhanced",
+                                                              extensions: "lt",
+                                                              parameters: DataForTests.ParametersPades,
+                                                              document: b64file));
 
-                    case SignatureType.CADES:
+                            Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
 
-                        jObj = JObject.Parse(_client.Sign(token: _token,
-                                                           signatureType: "cades",
-                                                           certid: cert.certid,
-                                                           certpin: "Abc123",
-                                                           profile: "t",
-                                                           extensions: "lt",
-                                                           parameters: DataForTests.ParametersCades,
-                                                           document: b64file));
+                            break;
 
-                        Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
+                        case SignatureType.CADES:
 
-                        break;
+                            jObj = JObject.Parse(_client.Sign(token: _token,
+                                                               signatureType: "cades",
+                                                               certid: cert.certid,
+                                                               certpin: "Abc123",
+                                                               profile: "t",
+                                                               extensions: "lt",
+                                                               parameters: DataForTests.ParametersCades,
+                                                               document: b64file));
 
-                    case SignatureType.XADES:
+                            Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
 
-                        jObj = JObject.Parse(_client.Sign(token: _token,
-                                                           signatureType: "xades",
-                                                           certid: cert.certid,
-                                                           certpin: "Abc123",
-                                                           profile: "bes",
-                                                           extensions: "lt",
-                                                           parameters: DataForTests.ParametersCades,
-                                                           document: b64file));
+                            break;
 
-                        Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
-                        
-                        break;
+                        case SignatureType.XADES:
+
+                            jObj = JObject.Parse(_client.Sign(token: _token,
+                                                               signatureType: "xades",
+                                                               certid: cert.certid,
+                                                               certpin: "Abc123",
+                                                               profile: "bes",
+                                                               extensions: "lt",
+                                                               parameters: DataForTests.ParametersCades,
+                                                               document: b64file));
+
+                            Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
+
+                            break;
+                    }
+
+                    if (bool.Parse(ConfigurationManager.AppSettings["savesigneddocs"])) SaveDoc(jObj, doc);
                 }
-
-                if (bool.Parse(ConfigurationManager.AppSettings["savesigneddocs"])) SaveDoc(jObj, doc.SignType);
             }
-
-            Assert.IsTrue(true);
+            catch (Exception ex)
+            {
+                Assert.Fail($"Se lanzó una excepción inesperada: {ex.Message}");
+            }
         }
 
 
 
 
+        [TestMethod]
+        public void SignDocs()
+        {
+            try 
+            { 
+                if (_certs == null || _certs.Count == 0) 
+                {
+                    GetCertificates();
+                    if (_certs == null || _certs.Count == 0) { Assert.Fail("La lista de certificados no debe ser null o no puede está vacía."); return; }
+                }
+
+
+                Certificate cert = _certs.First();
+
+                foreach (var doc in DataForTests.Documents) //.Where(x => x.SignType == SignatureType.XADES).Take(1)) 
+                {
+                    var file = File.ReadAllBytes(doc.Path);
+
+                    JObject jObj = null;
+
+                    switch (doc.SignType) 
+                    {
+                        case SignatureType.PADES:
+
+                            jObj = _client.Sign(token: _token,
+                                                type: doc.SignType,
+                                                certid: cert.certid,
+                                                certpin: "Abc123",
+                                                profile: ProfilePades.ENHANCED,
+                                                extensions: "lt",
+                                                parameters: _client.CastThePadesParams(DataForTests.ParametersPades),
+                                                document: file);
+
+                            Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
+
+                            break;
+
+                        case SignatureType.CADES:
+
+                            jObj = _client.Sign(token: _token,
+                                                type: doc.SignType,
+                                                certid: cert.certid,
+                                                certpin: "Abc123",
+                                                profile: ProfileCades.T,
+                                                extensions: "lt",
+                                                parameters: _client.CastTheCadesParams(DataForTests.ParametersCades),
+                                                document: file);
+
+                            Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
+
+                            break;
+
+                        case SignatureType.XADES:
+
+                            jObj = _client.Sign(token: _token,
+                                                type: doc.SignType,
+                                                certid: cert.certid,
+                                                certpin: "Abc123",
+                                                profile: ProfileXades.BES,
+                                                extensions: "lt",
+                                                parameters: _client.CastTheXadesParams(DataForTests.ParametersCades),
+                                                document: file);
+
+                            Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
+
+                            break;
+                    }
+
+                    if( bool.Parse(ConfigurationManager.AppSettings["savesigneddocs"]) ) SaveDoc(jObj, doc);
+                }
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"Se lanzó una excepción inesperada: {ex.Message}");
+            }
+        }
+
+
+
+
+
+        [TestMethod]
+        public void VerifyDocs_Compatible() 
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(_token))
+                {
+                    GetToken();
+                    if (string.IsNullOrEmpty(_token)) { Assert.Fail("El AccessToken no debe ser null ni cadena vacía."); return; }
+                }
+
+                var docs = LoadDocs();
+
+                foreach (var doc in docs)
+                {
+                    bool bol = _client.Verify(_token, doc.SignType.ToString(), null, doc.B64File);
+
+                    Assert.IsTrue(bol, $"Error en la verificación del documento.");
+                }
+
+                Assert.IsTrue(true);
+
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"Se lanzó una excepción inesperada: {ex.Message}");
+            }
+        }
+
+
+
+        [TestMethod]
+        public void VerifyDocs()
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(_token))
+                {
+                    GetToken();
+                    if (string.IsNullOrEmpty(_token)) { Assert.Fail("El AccessToken no debe ser null ni cadena vacía."); return; }
+                }
+
+                var docs = LoadDocs();
+
+                foreach (var doc in docs) 
+                {
+                    var jObj = _client.Verify(_token, doc.SignType, doc.File, null);
+
+                    Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la verificación del documento: {jObj["error"]["message"]} ");
+                }
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"Se lanzó una excepción inesperada: {ex.Message}");
+            }
+        }
 
 
 
         #region privathe methods
 
-        private void SaveDoc(JObject jObj, SignatureType stype) 
+        private Dictionary<string, Uri> GetEndpoints()
+        {
+            var endpointsSection = (NameValueCollection)ConfigurationManager.GetSection("endpoints");
+
+            var endpoints = endpointsSection.AllKeys
+                .ToDictionary(key => key, key => new Uri(endpointsSection[key], UriKind.Relative));
+
+            return endpoints;
+        }
+
+        private void SaveDoc(JObject jObj, Document document) 
         {
             try
             {
@@ -359,29 +405,15 @@ namespace UnitTestProjectForIntegrations
 
                 string ext = "";
 
-                switch (stype) 
+                switch (document.SignType) 
                 {
-                    case SignatureType.PADES:
-
-                        ext = "pdf";
-
-                        break;
-
-                    case SignatureType.CADES:
-
-                        ext = "p7m";
-
-                        break;
-
-                    case SignatureType.XADES:
-
-                        ext = "xml";
-
-                        break;
+                    case SignatureType.PADES: ext = "pdf"; break;
+                    case SignatureType.XADES: ext = "xml"; break;
+                    case SignatureType.CADES: ext = "p7m"; break;
                 }
 
                 string filepath = 
-                    Path.Combine(ConfigurationManager.AppSettings["ouputdirectory"], $"{DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss")}.{ext}")
+                    Path.Combine(ConfigurationManager.AppSettings["ouputdirectory"], $"{Path.GetFileNameWithoutExtension(document.Name)}.{ext}")
                     .Replace('/', Path.DirectorySeparatorChar)
                     .Replace('\\', Path.DirectorySeparatorChar);
 
@@ -389,6 +421,31 @@ namespace UnitTestProjectForIntegrations
                 File.WriteAllBytes(filepath, pdfBytes);
             }
             catch { }
+        }
+
+        private List<Document> LoadDocs()
+        {
+            List<Document> documentos = new List<Document>();
+
+            var files = Directory.GetFiles(ConfigurationManager.AppSettings["ouputdirectory"], "*.*", SearchOption.AllDirectories);
+
+            foreach (string file in files)//.Where(x => x.EndsWith(".pdf")).Take(1))
+            {
+                SignatureType type = SignatureType.CADES;
+
+                switch (Path.GetExtension(file).ToLowerInvariant()) 
+                {
+                    case ".pdf": type = SignatureType.PADES; break;
+                    case ".xml": type = SignatureType.XADES; break;
+                    default: type = SignatureType.CADES; break;
+                }
+
+                var doc = new Document(Path.GetFileName(file), type, File.ReadAllBytes(file));
+
+                documentos.Add(doc);
+            }
+
+            return documentos;
         }
 
         #endregion privathe methods

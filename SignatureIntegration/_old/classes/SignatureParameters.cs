@@ -154,14 +154,14 @@ namespace SignatureIntegration
 
 	#region VERIFY
 
-	internal class VerifyPades
+	internal class old_VerifyPades
 	{
 		public string options { get; set; }
 		public string document { get; set; }
 		public string password { get; set; }
 	}
 
-	internal class VerifyXades
+	internal class old_VerifyXades
 	{
 
 		public string options { get; set; }
@@ -170,7 +170,7 @@ namespace SignatureIntegration
 		public ReferenceData[] externaldatareferences { get; set; }
 	}
 
-	internal class VerifyCades
+	internal class old_VerifyCades
 	{
 
 		public string options { get; set; }

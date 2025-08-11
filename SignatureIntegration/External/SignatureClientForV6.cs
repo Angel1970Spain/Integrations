@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Security.Authentication;
 
 namespace SignatureIntegration.External
 {
@@ -215,10 +214,11 @@ namespace SignatureIntegration.External
 
             HashAlgType o_hashAlgType = (HashAlgType)Enum.Parse(typeof(HashAlgType), hashAlgType, ignoreCase: true);
 
-            return Sign( token, o_type, certid, certpin, o_profile, extensions, o_document, o_params, o_hashAlgType, envelop, detachedsignature );
+            return Sign( token, o_type, certid, certpin, o_profile, extensions, o_document, o_params, o_hashAlgType, envelop, detachedsignature )
+                   .ToString(Newtonsoft.Json.Formatting.Indented);
         }
 
-        public string Sign
+        public JObject Sign
         (
             string token,
             SignatureType type,
@@ -305,9 +305,100 @@ namespace SignatureIntegration.External
 
             var ojson = _connector.PostAsync(endpoint, jsonBody, token).GetAwaiter().GetResult();
 
-            string json = ojson.ToString(Newtonsoft.Json.Formatting.Indented);
+            return ojson;
+        }
 
-            return json;
+
+
+
+
+        public bool Verify
+        (
+            string token, 
+            string signatureType,
+            string parameters,
+            string document,
+            string documentpassword = null,
+            string detachedsignature = null,
+            ExternalReferences[] refdata = null
+        )
+        {
+            SignatureType o_type = (SignatureType)Enum.Parse(typeof(SignatureType), signatureType, ignoreCase: true);
+            byte[] o_document = Convert.FromBase64String(document);
+
+            var jObj = Verify(token, o_type, o_document, options: parameters, documentpassword, detachedsignature, refdata);
+            
+            return jObj["error"]["message"].ToString().ToLower() == "ok";
+        }
+
+
+        public JObject Verify
+        (
+            string token, 
+            SignatureType type, 
+            byte[] document,
+            string options = null,
+            string documentpassword = null,
+            string detachedsignature = null,
+            ExternalReferences[] refdata = null
+        )
+        {
+            Uri endpoint = null;
+            JObject jsonBody = null;
+
+            switch (type)
+            {
+                case SignatureType.PADES:
+
+                    endpoint = new Uri(_baseUri, _endpoints["VERIFY_PADES"]);
+
+                    var bodyp = new VerifyPades
+                    {
+                        document = document,
+                        password = documentpassword,
+                        options = options
+                    };
+                    
+                    jsonBody = JObject.FromObject(bodyp);
+
+                    break;
+
+                case SignatureType.CADES:
+
+                    endpoint = new Uri(_baseUri, _endpoints["VERIFY_CADES"]);
+
+                    var bodyc = new VerifyCades
+                    {
+                        options = options,
+                        document = document, 
+                        detachedsignature = detachedsignature
+
+                    };
+
+                    jsonBody = JObject.FromObject(bodyc);
+
+                    break;
+
+                case SignatureType.XADES:
+
+                    endpoint = new Uri(_baseUri, _endpoints["VERIFY_XADES"]);
+
+                    var bodyx = new VerifyXades
+                    {
+                        options = options,
+                        document = document,
+                        detachedsignature = detachedsignature,
+                        ExternalReferences = refdata
+                    };
+
+                    jsonBody = JObject.FromObject(bodyx);
+
+                    break;
+            }
+
+            var ojson = _connector.PostAsync(endpoint, jsonBody, token).GetAwaiter().GetResult();
+
+            return ojson;
         }
     }
 }

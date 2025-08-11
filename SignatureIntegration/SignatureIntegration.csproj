@@ -80,6 +80,7 @@
     <Compile Include="Model\Iv6ClassModel\Cert.cs" />
     <Compile Include="Model\Certificate.cs" />
     <Compile Include="Model\Enums\Enums.cs" />
+    <Compile Include="Model\Iv6ClassModel\ExternalReferences.cs" />
     <Compile Include="Model\Iv6ClassModel\PdfSignBackground.cs" />
     <Compile Include="Model\Iv6ClassModel\PDFSignParams.cs" />
     <Compile Include="Model\Iv6ClassModel\PdfSignWidgetProps.cs" />
@@ -95,6 +96,9 @@
     <Compile Include="Model\Iv6ClassModel\SignPadesParams.cs" />
     <Compile Include="Model\Iv6ClassModel\TimeStampServerInfo.cs" />
     <Compile Include="Model\Iv6ClassModel\TransparencyMask.cs" />
+    <Compile Include="Model\VerifyCades.cs" />
+    <Compile Include="Model\VerifyPades.cs" />
+    <Compile Include="Model\VerifyXades.cs" />
     <Compile Include="_old\classes\Auth.cs" />
     <Compile Include="_old\classes\Certificate.cs" />
     <Compile Include="_old\classes\SignatureParameters.cs" />

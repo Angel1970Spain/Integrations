@@ -1,4 +1,5 @@
 ﻿
+using Newtonsoft.Json.Linq;
 using SignatureIntegration.Model.Enums;
 using SignatureIntegration.Model.Iv6ClassModel;
 using System;
@@ -146,8 +147,8 @@ namespace SignatureIntegration.External
         /// <param name="hashAlgType"></param>
         /// <param name="envelop"></param>
         /// <param name="detachedsignature"></param>
-        /// <returns>Json con el retorno de la api</returns>
-        string Sign
+        /// <returns>JObject con el retorno de la api</returns>
+        JObject Sign
         (
             string token,
             SignatureType type,
@@ -160,6 +161,29 @@ namespace SignatureIntegration.External
             HashAlgType hashAlgType = HashAlgType.SHA256,
             string envelop = "",
             string detachedsignature = ""
+        );
+
+
+        bool Verify
+        (
+            string token, 
+            string signatureType,
+            string parameters,
+            string document,
+            string documentpassword = null,
+            string detachedsignature = null,
+            ExternalReferences[] refdata = null
+        );
+
+        JObject Verify
+        (
+            string token,
+            SignatureType type,
+            byte[] document,
+            string options = null,
+            string documentpassword = null,
+            string detachedsignature = null,
+            ExternalReferences[] refdata = null
         );
 
     }
