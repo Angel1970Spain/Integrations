@@ -1,0 +1,4 @@
+﻿Hola, este es un documento de texto de prueba
+línea 2
+línea 3
+etc.

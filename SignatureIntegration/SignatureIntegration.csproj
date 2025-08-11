@@ -99,15 +99,7 @@
     <Compile Include="Model\VerifyCades.cs" />
     <Compile Include="Model\VerifyPades.cs" />
     <Compile Include="Model\VerifyXades.cs" />
-    <Compile Include="_old\classes\Auth.cs" />
-    <Compile Include="_old\classes\Certificate.cs" />
-    <Compile Include="_old\classes\SignatureParameters.cs" />
-    <Compile Include="_old\common\Rester.cs" />
     <Compile Include="Connector\ConnectorForV6.cs" />
-    <Compile Include="_old\enumerators\AuthMethod.cs" />
-    <Compile Include="_old\enumerators\SignatureTypes.cs" />
-    <Compile Include="_old\ISignatureClient.cs" />
-    <Compile Include="_old\SignatureClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

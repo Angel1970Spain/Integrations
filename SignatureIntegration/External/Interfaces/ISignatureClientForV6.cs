@@ -1,5 +1,6 @@
 ﻿
 using Newtonsoft.Json.Linq;
+using SignatureIntegration.Model;
 using SignatureIntegration.Model.Enums;
 using SignatureIntegration.Model.Iv6ClassModel;
 using System;

@@ -1,8 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SignatureIntegration;
 using SignatureIntegration.External;
+using SignatureIntegration.Model;
 using SignatureIntegration.Model.Enums;
 using System;
 using System.Collections.Generic;
@@ -25,10 +25,14 @@ namespace UnitTestProjectForIntegrations
 
         private List<Certificate> _certs = null;
 
+        private string _certPin = "";
+
         public UnitTest1() 
         {
             var uri = new Uri(ConfigurationManager.AppSettings["ApiUrl"]);
             var endpoints = GetEndpoints();
+
+            _certPin = ConfigurationManager.AppSettings["certpin"];
 
             _client = new SignatureClientForV6(uri, endpoints);
 
@@ -192,7 +196,7 @@ namespace UnitTestProjectForIntegrations
                             jObj = JObject.Parse(_client.Sign(token: _token,
                                                               signatureType: "pades",
                                                               certid: cert.certid,
-                                                              certpin: "Abc123",
+                                                              certpin: _certPin,
                                                               profile: "enhanced",
                                                               extensions: "lt",
                                                               parameters: DataForTests.ParametersPades,
@@ -207,7 +211,7 @@ namespace UnitTestProjectForIntegrations
                             jObj = JObject.Parse(_client.Sign(token: _token,
                                                                signatureType: "cades",
                                                                certid: cert.certid,
-                                                               certpin: "Abc123",
+                                                               certpin: _certPin,
                                                                profile: "t",
                                                                extensions: "lt",
                                                                parameters: DataForTests.ParametersCades,
@@ -222,7 +226,7 @@ namespace UnitTestProjectForIntegrations
                             jObj = JObject.Parse(_client.Sign(token: _token,
                                                                signatureType: "xades",
                                                                certid: cert.certid,
-                                                               certpin: "Abc123",
+                                                               certpin: _certPin,
                                                                profile: "bes",
                                                                extensions: "lt",
                                                                parameters: DataForTests.ParametersCades,
@@ -272,7 +276,7 @@ namespace UnitTestProjectForIntegrations
                             jObj = _client.Sign(token: _token,
                                                 type: doc.SignType,
                                                 certid: cert.certid,
-                                                certpin: "Abc123",
+                                                certpin: _certPin,
                                                 profile: ProfilePades.ENHANCED,
                                                 extensions: "lt",
                                                 parameters: _client.CastThePadesParams(DataForTests.ParametersPades),
@@ -287,7 +291,7 @@ namespace UnitTestProjectForIntegrations
                             jObj = _client.Sign(token: _token,
                                                 type: doc.SignType,
                                                 certid: cert.certid,
-                                                certpin: "Abc123",
+                                                certpin: _certPin,
                                                 profile: ProfileCades.T,
                                                 extensions: "lt",
                                                 parameters: _client.CastTheCadesParams(DataForTests.ParametersCades),
@@ -302,7 +306,7 @@ namespace UnitTestProjectForIntegrations
                             jObj = _client.Sign(token: _token,
                                                 type: doc.SignType,
                                                 certid: cert.certid,
-                                                certpin: "Abc123",
+                                                certpin: _certPin,
                                                 profile: ProfileXades.BES,
                                                 extensions: "lt",
                                                 parameters: _client.CastTheXadesParams(DataForTests.ParametersCades),
