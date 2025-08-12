@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using SignatureIntegration.External;
 using SignatureIntegration.Model;
 using SignatureIntegration.Model.Enums;
+using SignatureIntegration.Model.Iv6ClassModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -20,7 +21,7 @@ namespace UnitTestProjectForIntegrations
     public class UnitTest1
     {
 
-        private ISignatureClient _client;
+        private ISignatureClientV6 _client;
 
         private string _token = "";
 
@@ -58,10 +59,10 @@ namespace UnitTestProjectForIntegrations
             {
                 string orgaid = ConfigurationManager.AppSettings["orgaid"];
                 string login = ConfigurationManager.AppSettings["login"];
-                string pass = ConfigurationManager.AppSettings["pass"];
+                string password = ConfigurationManager.AppSettings["pass"];
                 string module = ConfigurationManager.AppSettings["module"];
 
-                var r = _client.GetToken(orgaid, login, pass, module);
+                var r = _client.GetToken(orgaid, login, password, "pass", null, module);
 
                 Assert.IsNotNull(r, "El AccessToken no debe ser null.");
                 Assert.IsInstanceOfType(r, typeof(string), "El AccessToken debe ser un string.");
@@ -120,7 +121,8 @@ namespace UnitTestProjectForIntegrations
                     if (string.IsNullOrEmpty(_token)) { Assert.Fail("El AccessToken no debe ser null ni cadena vacía."); return; }
                 }
 
-                _certs = _client.GetCertificates(_token);
+                var certstr = _client.GetCertificates(_token);
+                _certs = _client.DeserializeCertificates(certstr);
 
                 Assert.IsNotNull(_certs, "La lista de certificados no debe ser null.");
                 Assert.IsTrue(_certs.Count > 0, "La lista de certificados está vacía.");
@@ -367,7 +369,7 @@ namespace UnitTestProjectForIntegrations
                     if (string.IsNullOrEmpty(_token)) { Assert.Fail("El AccessToken no debe ser null ni cadena vacía."); return; }
                 }
 
-                var docs = LoadDocs();
+                var docs = LoadDocs().Where(x => x.SignType == SignatureType.XADES);
 
                 foreach (var doc in docs)
                 {

@@ -24,6 +24,6 @@ namespace SignatureIntegration.Model
         /// <summary>
         /// No figura en la doc oficial, pero si en la dll antigua como ReferenceData y en el json del swagger.
         /// </summary>
-        public ExternalReferences[] ExternalReferences { get; set; }
+        public ReferenceData[] ExternalReferences { get; set; }
     }
 }

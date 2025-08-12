@@ -73,14 +73,16 @@
   <ItemGroup>
     <Compile Include="Connector\Interfaces\IConnectorForV6.cs" />
     <Compile Include="External\Interfaces\ISignatureClient.cs" />
+    <Compile Include="External\Interfaces\ISignatureClientV6.cs" />
     <Compile Include="External\SignatureClient.cs" />
+    <Compile Include="InternalLogic\Extensions.cs" />
     <Compile Include="InternalLogic\SignatureAuxLogic.cs" />
     <Compile Include="Model\Iv6ClassModel\Biometry.cs" />
     <Compile Include="Model\Iv6ClassModel\Caller.cs" />
     <Compile Include="Model\Iv6ClassModel\Cert.cs" />
     <Compile Include="Model\Certificate.cs" />
     <Compile Include="Model\Enums\Enums.cs" />
-    <Compile Include="Model\Iv6ClassModel\ExternalReferences.cs" />
+    <Compile Include="Model\Iv6ClassModel\ReferenceData.cs" />
     <Compile Include="Model\Iv6ClassModel\PdfSignBackground.cs" />
     <Compile Include="Model\Iv6ClassModel\PDFSignParams.cs" />
     <Compile Include="Model\Iv6ClassModel\PdfSignWidgetProps.cs" />

@@ -1,7 +1,10 @@
 ﻿
+using System.Runtime.InteropServices;
+
 namespace SignatureIntegration.Model.Iv6ClassModel
 {
-    public class ExternalReferences
+    [Guid("75E42C56-87E9-4589-8CBE-75580E68B871"), ComVisible(true), ProgId("SignatureIntegration.referencedata")]
+    public class ReferenceData
     {
         public string uri { get; set; }
         public string idprefix { get; set; }

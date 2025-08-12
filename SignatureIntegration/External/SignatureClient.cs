@@ -9,11 +9,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace SignatureIntegration.External
 {
-    public class SignatureClient: ISignatureClient
+    [Guid("C4F3D9A7-9B47-4B32-ACF9-2E3D85B67F15")] 
+    [ClassInterface(ClassInterfaceType.None)]
+    [ProgId("SignatureIntegration.client")]
+    [ComVisible(true)]
+    public class SignatureClient: ISignatureClientV6
     {
         private IConnectorForV6 _connector;
 
@@ -53,29 +58,26 @@ namespace SignatureIntegration.External
         }
 
 
-        public bool CheckTest() 
+        public void Initialize(string url)
         {
-
-            return true;
-        } 
+            throw new NotImplementedException();
+        }
 
 
         public string GetToken
         (
-            string orgaid,
-            string login,
-            string pass,
-            string module,
-            AuthMethod authmethod = AuthMethod.PASS,
-            string origin = null,
-            string modkey = null,
-            string modver = null,
-            string deviceinfo = null
+            string orgaid, 
+            string login, 
+            string password, 
+            string method, 
+            string modulekey, 
+            string module = "signatureintegration"
         )
         {
-            return GetTokenAsync(orgaid,login,pass,module,authmethod,origin,modkey,modver,deviceinfo).GetAwaiter().GetResult();
-        }
+            AuthMethod o_method = (AuthMethod)Enum.Parse(typeof(AuthMethod), method, ignoreCase: true);
 
+            return GetTokenAsync(orgaid, login, password, module, o_method, null, modulekey, null, null).GetAwaiter().GetResult();
+        }
 
         public async Task<string> GetTokenAsync
         (
@@ -118,10 +120,7 @@ namespace SignatureIntegration.External
         }
 
 
-
-
-
-        public List<Certificate> GetCertificates
+        public string GetCertificates
         (
             string token
         )
@@ -132,11 +131,15 @@ namespace SignatureIntegration.External
 
             var ojson = _connector.PostAsync(endpoint, jsonBody, token).GetAwaiter().GetResult();
 
-            var r = ojson["certlist"].ToObject<List<Certificate>>();
+            var certificates = ojson["certlist"].ToObject<List<Certificate>>();
 
-            return r;
+            return certificates.Serialize();
         }
 
+        public List<Certificate> DeserializeCertificates(string certificates) 
+        {
+            return certificates.Deserialize<List<Certificate>>();   
+        }
 
         public async Task<List<Certificate>> GetCertificatesAsync
         (
@@ -324,22 +327,23 @@ namespace SignatureIntegration.External
         }
 
 
-
-
         public bool Verify
         (
-            string token,
-            string signatureType,
-            string parameters,
-            string document,
-            string documentpassword = null,
-            string detachedsignature = null,
-            ExternalReferences[] refdata = null
+            string token, 
+            string signatureType, 
+            string parameters, 
+            string document, 
+            string documentpassword = "", 
+            string detachedsignature = "", 
+            ReferenceData[] refdata = null
         )
         {
             SignatureType o_type = (SignatureType)Enum.Parse(typeof(SignatureType), signatureType, ignoreCase: true);
 
             byte[] o_document = Convert.FromBase64String(document);
+
+            if (documentpassword == "") documentpassword = null;
+            if (detachedsignature == "") detachedsignature = null;
 
             var jObj = VerifyAsync(token, o_type, o_document, options: parameters, documentpassword, detachedsignature, refdata).GetAwaiter().GetResult();
 
@@ -354,7 +358,7 @@ namespace SignatureIntegration.External
             string options = null,
             string documentpassword = null,
             string detachedsignature = null,
-            ExternalReferences[] refdata = null
+            ReferenceData[] refdata = null
         )
         {
             Uri endpoint = null;

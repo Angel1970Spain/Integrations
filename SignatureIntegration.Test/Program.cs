@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SignatureIntegration.External;
+using SignatureIntegration.External.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -18,7 +19,7 @@ namespace SignatureIntegration.Test
             var endpoints = GetEndpoints();
             var orgaid = ConfigurationManager.AppSettings["orgaid"];
             var login = ConfigurationManager.AppSettings["login"];
-            var pass = ConfigurationManager.AppSettings["pass"];
+            var password = ConfigurationManager.AppSettings["pass"];
             var module = ConfigurationManager.AppSettings["module"];
             var certPin = ConfigurationManager.AppSettings["certpin"];
             var certId = ConfigurationManager.AppSettings["certid"];
@@ -54,12 +55,14 @@ namespace SignatureIntegration.Test
 
             try
             {
-                var token = client.GetToken(orgaid, login, pass, module);
+                var token = client.GetToken(orgaid, login, password, "pass", null, module);
 
                 Console.WriteLine($"Token: {token}");
                 Console.WriteLine();
 
-                var cert = client.GetCertificates(token).Single(x => x.certid == certId);
+                var certstr = client.GetCertificates(token);
+
+                var cert = (client as ISignatureClientV6).DeserializeCertificates(certstr).Single(x => x.certid == certId);
 
                 Console.WriteLine($"Certificado: {JsonConvert.SerializeObject(cert)}");
                 Console.WriteLine();
@@ -81,9 +84,11 @@ namespace SignatureIntegration.Test
                 goto JMP;
             JMP:
 
+                JObject jObj = null;
+
                 Console.WriteLine("Firmando signpades:");
                 var signpades = client.Sign(token, "pades", cert.certid, certPin, "enhanced", "lt", "cause=test;autopos=true;autosize=true;hidetext=false;policy=policyidentifier=2.16.724.1.3.1.1.2.1.9,policydigest=G7roucf600+f03r/o0bAOQ6WAs0=,policydigestalgorithm=sha1,policiidentifieraddqualifier=true,policyqualifieruri=https://sede.060.gob.es/politica_de_firma_anexo_1.pdf", filepades);
-                var jObj = JObject.Parse(signpades);
+                jObj = JObject.Parse(signpades);
                 var sign_filepades = jObj["data"].ToString();
                 jObj["data"] = "[Documento firmado en Base64]";
                 Console.WriteLine(jObj.ToString());
@@ -157,12 +162,12 @@ namespace SignatureIntegration.Test
                 Console.WriteLine();
 
                 Console.WriteLine("Verificando xades:");
-                var verifyxades = client.Verify(token, "xades", "", sign_filexades);
+                var verifyxades = client.Verify(token, "xades", null, sign_filexades);
                 Console.WriteLine($"Resultado: {verifyxades}");
                 Console.WriteLine();
 
                 Console.WriteLine("Verificando cades:");
-                var verifycades = client.Verify(token, "cades", "", sign_filecades);
+                var verifycades = client.Verify(token, "cades", null, sign_filecades);
                 Console.WriteLine($"Resultado: {verifycades}");
                 Console.WriteLine();
 
