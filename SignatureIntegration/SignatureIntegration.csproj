@@ -72,8 +72,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Connector\Interfaces\IConnectorForV6.cs" />
-    <Compile Include="External\Interfaces\ISignatureClientForV6.cs" />
-    <Compile Include="External\SignatureClientForV6.cs" />
+    <Compile Include="External\Interfaces\ISignatureClient.cs" />
+    <Compile Include="External\SignatureClient.cs" />
     <Compile Include="InternalLogic\SignatureAuxLogic.cs" />
     <Compile Include="Model\Iv6ClassModel\Biometry.cs" />
     <Compile Include="Model\Iv6ClassModel\Caller.cs" />

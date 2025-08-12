@@ -10,6 +10,7 @@ using System.Collections.Specialized;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using UnitTestProjectForIntegrations.Data;
 using UnitTestProjectForIntegrations.Model;
 
@@ -19,7 +20,7 @@ namespace UnitTestProjectForIntegrations
     public class UnitTest1
     {
 
-        private ISignatureClientForV6 _client;
+        private ISignatureClient _client;
 
         private string _token = "";
 
@@ -27,14 +28,17 @@ namespace UnitTestProjectForIntegrations
 
         private string _certPin = "";
 
+        private string _certId = "";
+
         public UnitTest1() 
         {
             var uri = new Uri(ConfigurationManager.AppSettings["ApiUrl"]);
             var endpoints = GetEndpoints();
 
             _certPin = ConfigurationManager.AppSettings["certpin"];
+            _certId = ConfigurationManager.AppSettings["certid"];
 
-            _client = new SignatureClientForV6(uri, endpoints);
+            _client = new SignatureClient(uri, endpoints);
 
             DataForTests.Documents
                 .ForEach(d => d.Path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Documents", d.Name));
@@ -47,9 +51,8 @@ namespace UnitTestProjectForIntegrations
 
 
 
-
         [TestMethod]
-        public void GetToken()
+        public void GetToken_Compatible()
         {
             try
             {
@@ -74,11 +77,8 @@ namespace UnitTestProjectForIntegrations
         }
 
 
-
-
-
         [TestMethod]
-        public void GetTokens()
+        public async Task GetToken()
         {
             try
             {
@@ -87,18 +87,14 @@ namespace UnitTestProjectForIntegrations
                 string pass = ConfigurationManager.AppSettings["pass"];
                 string module = ConfigurationManager.AppSettings["module"];
 
-                var r = _client.GetTokens(orgaid, login, pass, module);
+                var r = await _client.GetTokenAsync(orgaid, login, pass, module);
 
-                Assert.IsNotNull(r.Item1, "El AccessToken no debe ser null.");
-                Assert.IsNotNull(r.Item2, "El RefreshToken no debe ser null.");
+                Assert.IsNotNull(r, "El AccessToken no debe ser null.");
+                Assert.IsInstanceOfType(r, typeof(string), "El AccessToken debe ser un string.");
+                Assert.IsFalse(string.IsNullOrEmpty(r), "El AccessToken no debe ser null ni cadena vacía.");
 
-                Assert.IsInstanceOfType(r.Item1, typeof(string), "El AccessToken debe ser un string.");
-                Assert.IsInstanceOfType(r.Item2, typeof(string), "El RefreshToken debe ser un string.");
+                _token = r;
 
-                Assert.IsFalse(string.IsNullOrEmpty(r.Item1), "El AccessToken no debe ser null ni cadena vacía.");
-                Assert.IsFalse(string.IsNullOrEmpty(r.Item2), "El RefreshToken no debe ser null ni cadena vacía.");
-
-                _token = r.Item1;
             }
             catch (Exception ex)
             {
@@ -110,22 +106,21 @@ namespace UnitTestProjectForIntegrations
 
 
 
-        [TestMethod]
-        public void GetCertificates() 
-        {
-            try {
 
-                if (string.IsNullOrEmpty(_token)) 
+
+        [TestMethod]
+        public void GetCertificates_Compatible()
+        {
+            try
+            {
+
+                if (string.IsNullOrEmpty(_token))
                 {
-                    GetToken();
-                    if (string.IsNullOrEmpty(_token)) { Assert.Fail("El AccessToken no debe ser null ni cadena vacía."); return; } 
+                    GetToken_Compatible();
+                    if (string.IsNullOrEmpty(_token)) { Assert.Fail("El AccessToken no debe ser null ni cadena vacía."); return; }
                 }
 
-
-                string orgaid = ConfigurationManager.AppSettings["orgaid"];
-                string userid = ConfigurationManager.AppSettings["login"];
-
-                _certs = _client.GetCertificates(userid, orgaid, _token);
+                _certs = _client.GetCertificates(_token);
 
                 Assert.IsNotNull(_certs, "La lista de certificados no debe ser null.");
                 Assert.IsTrue(_certs.Count > 0, "La lista de certificados está vacía.");
@@ -136,6 +131,37 @@ namespace UnitTestProjectForIntegrations
                 Assert.Fail($"Se lanzó una excepción inesperada: {ex.Message}");
             }
         }
+
+
+        [TestMethod]
+        public async Task GetCertificates() 
+        {
+            try {
+
+                if (string.IsNullOrEmpty(_token)) 
+                {
+                    await GetToken();
+                    if (string.IsNullOrEmpty(_token)) { Assert.Fail("El AccessToken no debe ser null ni cadena vacía."); return; } 
+                }
+
+
+                string orgaid = ConfigurationManager.AppSettings["orgaid"];
+                string userid = ConfigurationManager.AppSettings["login"];
+
+                _certs = await _client.GetCertificatesAsync(_token, userid, orgaid );
+
+                Assert.IsNotNull(_certs, "La lista de certificados no debe ser null.");
+                Assert.IsTrue(_certs.Count > 0, "La lista de certificados está vacía.");
+
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"Se lanzó una excepción inesperada: {ex.Message}");
+            }
+        }
+
+
+
 
 
 
@@ -176,12 +202,12 @@ namespace UnitTestProjectForIntegrations
             {
                 if (_certs == null || _certs.Count == 0)
                 {
-                    GetCertificates();
+                    GetCertificates_Compatible();
                     if (_certs == null || _certs.Count == 0) { Assert.Fail("La lista de certificados no debe ser null o no puede está vacía."); return; }
                 }
 
 
-                Certificate cert = _certs.First();
+                Certificate cert = _certs.Single(x => x.certid == _certId);
 
                 foreach (var doc in DataForTests.Documents)//.Where(x => x.SignType == SignatureType.PADES).Take(1)) 
                 {
@@ -247,21 +273,19 @@ namespace UnitTestProjectForIntegrations
         }
 
 
-
-
         [TestMethod]
-        public void SignDocs()
+        public async Task SignDocs()
         {
             try 
             { 
                 if (_certs == null || _certs.Count == 0) 
                 {
-                    GetCertificates();
+                    await GetCertificates();
                     if (_certs == null || _certs.Count == 0) { Assert.Fail("La lista de certificados no debe ser null o no puede está vacía."); return; }
                 }
 
 
-                Certificate cert = _certs.First();
+                Certificate cert = _certs.Single(x => x.certid == _certId);
 
                 foreach (var doc in DataForTests.Documents) //.Where(x => x.SignType == SignatureType.XADES).Take(1)) 
                 {
@@ -273,14 +297,14 @@ namespace UnitTestProjectForIntegrations
                     {
                         case SignatureType.PADES:
 
-                            jObj = _client.Sign(token: _token,
-                                                type: doc.SignType,
-                                                certid: cert.certid,
-                                                certpin: _certPin,
-                                                profile: ProfilePades.ENHANCED,
-                                                extensions: "lt",
-                                                parameters: _client.CastThePadesParams(DataForTests.ParametersPades),
-                                                document: file);
+                            jObj = await _client.SignAsync(token: _token,
+                                                           type: doc.SignType,
+                                                           certid: cert.certid,
+                                                           certpin: _certPin,
+                                                           profile: ProfilePades.ENHANCED,
+                                                           extensions: "lt",
+                                                           parameters: _client.CastThePadesParams(DataForTests.ParametersPades),
+                                                           document: file);
 
                             Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
 
@@ -288,14 +312,14 @@ namespace UnitTestProjectForIntegrations
 
                         case SignatureType.CADES:
 
-                            jObj = _client.Sign(token: _token,
-                                                type: doc.SignType,
-                                                certid: cert.certid,
-                                                certpin: _certPin,
-                                                profile: ProfileCades.T,
-                                                extensions: "lt",
-                                                parameters: _client.CastTheCadesParams(DataForTests.ParametersCades),
-                                                document: file);
+                            jObj = await _client.SignAsync(token: _token,
+                                                           type: doc.SignType,
+                                                           certid: cert.certid,
+                                                           certpin: _certPin,
+                                                           profile: ProfileCades.T,
+                                                           extensions: "lt",
+                                                           parameters: _client.CastTheCadesParams(DataForTests.ParametersCades),
+                                                           document: file);
 
                             Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
 
@@ -303,14 +327,14 @@ namespace UnitTestProjectForIntegrations
 
                         case SignatureType.XADES:
 
-                            jObj = _client.Sign(token: _token,
-                                                type: doc.SignType,
-                                                certid: cert.certid,
-                                                certpin: _certPin,
-                                                profile: ProfileXades.BES,
-                                                extensions: "lt",
-                                                parameters: _client.CastTheXadesParams(DataForTests.ParametersCades),
-                                                document: file);
+                            jObj = await _client.SignAsync(token: _token,
+                                                           type: doc.SignType,
+                                                           certid: cert.certid,
+                                                           certpin: _certPin,
+                                                           profile: ProfileXades.BES,
+                                                           extensions: "lt",
+                                                           parameters: _client.CastTheXadesParams(DataForTests.ParametersCades),
+                                                           document: file);
 
                             Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la firma del documento: {jObj["error"]["message"]} ");
 
@@ -330,6 +354,8 @@ namespace UnitTestProjectForIntegrations
 
 
 
+
+
         [TestMethod]
         public void VerifyDocs_Compatible() 
         {
@@ -337,7 +363,7 @@ namespace UnitTestProjectForIntegrations
             {
                 if (string.IsNullOrEmpty(_token))
                 {
-                    GetToken();
+                    GetToken_Compatible();
                     if (string.IsNullOrEmpty(_token)) { Assert.Fail("El AccessToken no debe ser null ni cadena vacía."); return; }
                 }
 
@@ -360,15 +386,14 @@ namespace UnitTestProjectForIntegrations
         }
 
 
-
         [TestMethod]
-        public void VerifyDocs()
+        public async Task VerifyDocs()
         {
             try
             {
                 if (string.IsNullOrEmpty(_token))
                 {
-                    GetToken();
+                    await GetToken();
                     if (string.IsNullOrEmpty(_token)) { Assert.Fail("El AccessToken no debe ser null ni cadena vacía."); return; }
                 }
 
@@ -376,7 +401,7 @@ namespace UnitTestProjectForIntegrations
 
                 foreach (var doc in docs) 
                 {
-                    var jObj = _client.Verify(_token, doc.SignType, doc.File, null);
+                    var jObj = await _client.VerifyAsync(_token, doc.SignType, doc.File, null);
 
                     Assert.AreEqual((string)jObj["error"]["message"], "OK", $"Error cod. {jObj["error"]["code"]} en la verificación del documento: {jObj["error"]["message"]} ");
                 }

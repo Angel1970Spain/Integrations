@@ -5,10 +5,11 @@ using SignatureIntegration.Model.Enums;
 using SignatureIntegration.Model.Iv6ClassModel;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SignatureIntegration.External
 {
-    public interface ISignatureClientForV6
+    public interface ISignatureClient
     {
         /// <summary>
         /// Checkeo para la aplicación de test
@@ -17,7 +18,7 @@ namespace SignatureIntegration.External
         bool CheckTest();
 
         /// <summary>
-        /// Devuelve un el AccesToken
+        /// Devuelve el AccesToken
         /// </summary>
         /// <param name="orgaid"></param>
         /// <param name="login"></param>
@@ -43,7 +44,7 @@ namespace SignatureIntegration.External
         );
 
         /// <summary>
-        /// Devuelve el AccessToken(pos. 1) y el RefreshToken(pos. 2)
+        /// Devuelve el AccesToken
         /// </summary>
         /// <param name="orgaid"></param>
         /// <param name="login"></param>
@@ -54,8 +55,8 @@ namespace SignatureIntegration.External
         /// <param name="modkey"></param>
         /// <param name="modver"></param>
         /// <param name="deviceinfo"></param>
-        /// <returns>Tuple<AccessToken, RefreshToken></returns>
-        Tuple<string,string> GetTokens
+        /// <returns>AccessToken</returns>
+        Task<string> GetTokenAsync
         (
             string orgaid,
             string login,
@@ -72,11 +73,19 @@ namespace SignatureIntegration.External
         /// <summary>
         /// Obtiene una lista de certificados
         /// </summary>
-        /// <param name="userid">Pasado a GetToken como "login"</param>
-        /// <param name="orgaid"></param>
         /// <param name="token">El token obtenido en GetToken</param>
         /// <returns>Lista de instancias de certificate</returns>
-        List<Certificate> GetCertificates(string userid, string orgaid, string token);
+        List<Certificate> GetCertificates(string token);
+
+
+        /// <summary>
+        /// Obtiene una lista de certificados
+        /// </summary>
+        /// <param name="token">El token obtenido en GetToken</param>
+        /// <param name="userid">Opcional. Pasado a GetToken como "login"</param>
+        /// <param name="orgaid">Opcional</param>
+        /// <returns>Lista de instancias de certificate</returns>
+        Task<List<Certificate>> GetCertificatesAsync(string token, string userid = null, string orgaid = null);
 
 
         /// <summary>
@@ -149,7 +158,7 @@ namespace SignatureIntegration.External
         /// <param name="envelop"></param>
         /// <param name="detachedsignature"></param>
         /// <returns>JObject con el retorno de la api</returns>
-        JObject Sign
+        Task<JObject> SignAsync
         (
             string token,
             SignatureType type,
@@ -164,7 +173,17 @@ namespace SignatureIntegration.External
             string detachedsignature = ""
         );
 
-
+        /// <summary>
+        /// Verificación de documento firmado. Sobrecarga compatible con la antigua dll
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="signatureType"></param>
+        /// <param name="parameters"></param>
+        /// <param name="document"></param>
+        /// <param name="documentpassword"></param>
+        /// <param name="detachedsignature"></param>
+        /// <param name="refdata"></param>
+        /// <returns></returns>
         bool Verify
         (
             string token, 
@@ -176,7 +195,18 @@ namespace SignatureIntegration.External
             ExternalReferences[] refdata = null
         );
 
-        JObject Verify
+        /// <summary>
+        /// Verificación de archivo firmado
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="type"></param>
+        /// <param name="document"></param>
+        /// <param name="options"></param>
+        /// <param name="documentpassword"></param>
+        /// <param name="detachedsignature"></param>
+        /// <param name="refdata"></param>
+        /// <returns>JObject con el retorno de la api</returns>
+        Task<JObject> VerifyAsync
         (
             string token,
             SignatureType type,

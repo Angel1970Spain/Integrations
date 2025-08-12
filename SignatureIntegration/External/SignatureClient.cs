@@ -9,10 +9,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace SignatureIntegration.External
 {
-    public class SignatureClientForV6: ISignatureClientForV6
+    public class SignatureClient: ISignatureClient
     {
         private IConnectorForV6 _connector;
 
@@ -22,7 +23,7 @@ namespace SignatureIntegration.External
 
         private Dictionary<string, Uri> _endpoints;
 
-        public SignatureClientForV6(Uri baseUri, Dictionary<string, Uri> endpoints) 
+        public SignatureClient(Uri baseUri, Dictionary<string, Uri> endpoints) 
         {
             _connector = new ConnectorForV6();
             _auxLogic = new SignatureAuxLogic();
@@ -72,12 +73,12 @@ namespace SignatureIntegration.External
             string deviceinfo = null
         )
         {
-            var tokens = GetTokens(orgaid, login, pass, module, authmethod, origin, modkey, modver, deviceinfo);
-
-            return tokens.Item1;
+            return GetTokenAsync(orgaid,login,pass,module,authmethod,origin,modkey,modver,deviceinfo).GetAwaiter().GetResult();
         }
 
-        public Tuple<string, string> GetTokens(
+
+        public async Task<string> GetTokenAsync
+        (
             string orgaid,
             string login,
             string pass,
@@ -105,19 +106,16 @@ namespace SignatureIntegration.External
             if (modver != null) jsonBody["modver"] = modver;
             if (deviceinfo != null) jsonBody["deviceinfo"] = deviceinfo;
 
-            NetworkCredential credentials = authmethod == AuthMethod.WIN 
-                ? CredentialCache.DefaultNetworkCredentials 
+            NetworkCredential credentials = authmethod == AuthMethod.WIN
+                ? CredentialCache.DefaultNetworkCredentials
                 : null;
 
-            var ojson = _connector.PostAsync(endpoint, jsonBody, credentials).GetAwaiter().GetResult();
+            var ojson = await _connector.PostAsync(endpoint, jsonBody, credentials);
 
             var accessToken = ojson["token"].ToString();
-            var refreshToken = ojson["refreshToken"].ToString();
 
-            return new Tuple<string,string>(accessToken, refreshToken);
+            return accessToken;
         }
-
-
 
 
 
@@ -125,9 +123,26 @@ namespace SignatureIntegration.External
 
         public List<Certificate> GetCertificates
         (
-            string userid, 
-            string orgaid, 
             string token
+        )
+        {
+            var endpoint = new Uri(_baseUri, _endpoints["CERTIFICATE"]);
+
+            var jsonBody = new JObject();
+
+            var ojson = _connector.PostAsync(endpoint, jsonBody, token).GetAwaiter().GetResult();
+
+            var r = ojson["certlist"].ToObject<List<Certificate>>();
+
+            return r;
+        }
+
+
+        public async Task<List<Certificate>> GetCertificatesAsync
+        (
+            string token,
+            string userid = null,
+            string orgaid = null
         )
         {
             var endpoint = new Uri(_baseUri, _endpoints["CERTIFICATE"]);
@@ -138,13 +153,12 @@ namespace SignatureIntegration.External
                 ["userid"] = userid
             };
 
-            var ojson = _connector.PostAsync(endpoint, jsonBody, token).GetAwaiter().GetResult();
+            var ojson = await _connector.PostAsync(endpoint, jsonBody, token);
 
             var r = ojson["certlist"].ToObject<List<Certificate>>();
 
             return r;
         }
-
 
 
 
@@ -214,11 +228,12 @@ namespace SignatureIntegration.External
 
             HashAlgType o_hashAlgType = (HashAlgType)Enum.Parse(typeof(HashAlgType), hashAlgType, ignoreCase: true);
 
-            return Sign( token, o_type, certid, certpin, o_profile, extensions, o_document, o_params, o_hashAlgType, envelop, detachedsignature )
-                   .ToString(Newtonsoft.Json.Formatting.Indented);
+            var result = SignAsync(token, o_type, certid, certpin, o_profile, extensions, o_document, o_params, o_hashAlgType, envelop, detachedsignature).GetAwaiter().GetResult();
+                   
+            return result.ToString(Newtonsoft.Json.Formatting.Indented);
         }
 
-        public JObject Sign
+        public async Task<JObject> SignAsync
         (
             string token,
             SignatureType type,
@@ -303,7 +318,7 @@ namespace SignatureIntegration.External
                     break;
             }
 
-            var ojson = _connector.PostAsync(endpoint, jsonBody, token).GetAwaiter().GetResult();
+            var ojson = await _connector.PostAsync(endpoint, jsonBody, token);
 
             return ojson;
         }
@@ -311,10 +326,9 @@ namespace SignatureIntegration.External
 
 
 
-
         public bool Verify
         (
-            string token, 
+            string token,
             string signatureType,
             string parameters,
             string document,
@@ -324,15 +338,15 @@ namespace SignatureIntegration.External
         )
         {
             SignatureType o_type = (SignatureType)Enum.Parse(typeof(SignatureType), signatureType, ignoreCase: true);
+
             byte[] o_document = Convert.FromBase64String(document);
 
-            var jObj = Verify(token, o_type, o_document, options: parameters, documentpassword, detachedsignature, refdata);
-            
+            var jObj = VerifyAsync(token, o_type, o_document, options: parameters, documentpassword, detachedsignature, refdata).GetAwaiter().GetResult();
+
             return jObj["error"]["message"].ToString().ToLower() == "ok";
         }
 
-
-        public JObject Verify
+        public async Task<JObject> VerifyAsync
         (
             string token, 
             SignatureType type, 
@@ -396,9 +410,10 @@ namespace SignatureIntegration.External
                     break;
             }
 
-            var ojson = _connector.PostAsync(endpoint, jsonBody, token).GetAwaiter().GetResult();
+            var ojson = await _connector.PostAsync(endpoint, jsonBody, token);
 
             return ojson;
         }
+
     }
 }
