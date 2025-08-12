@@ -10,11 +10,15 @@ namespace SignatureIntegration.External.Interfaces
         [Obsolete("Utilice el constructor de la clase en su lugar.")]
         void Initialize(string url);
 
+
         string GetToken(string orgaid, string login, string password, string method, string modulekey, string module = "signatureintegration");
+
 
         string GetCertificates(string token);
 
+
         string Sign(string token, string signatureType, string certid, string certpin, string profile, string extensions, string parameters, string document, string hashalgorithm = "SHA256", string envelop = "", string detachedsignature = "");
+
 
         bool Verify(string token, string signatureType, string parameters, string document, string documentpassword = "", string detachedsignature = "", ReferenceData[] refdata = null);
     }

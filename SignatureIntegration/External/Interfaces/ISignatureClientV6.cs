@@ -52,12 +52,14 @@ namespace SignatureIntegration.External
         /// <returns>Lista de instancias de certificate</returns>
         Task<List<Certificate>> GetCertificatesAsync(string token, string userid = null, string orgaid = null);
 
+
         /// <summary>
         /// Deserializa los certificados de modo texto a List<Certificates>
         /// </summary>
         /// <param name="certificates"></param>
         /// <returns></returns>
         List<Certificate> DeserializeCertificates(string certificates);
+
 
         /// <summary>
         /// Convierte un string plano en un modelo SignPadesParams
@@ -81,37 +83,6 @@ namespace SignatureIntegration.External
         /// <param name="parameters"></param>
         /// <returns></returns>
         SignXadesParams CastTheXadesParams(string parameters);
-
-
-        /// <summary>
-        /// Firmado de documentos. Sobrecarga compatible con la antigua dll
-        /// </summary>
-        /// <param name="token"></param>
-        /// <param name="signatureType"></param>
-        /// <param name="certid"></param>
-        /// <param name="certpin"></param>
-        /// <param name="profile"></param>
-        /// <param name="extensions"></param>
-        /// <param name="parameters"></param>
-        /// <param name="document"></param>
-        /// <param name="hashAlgType"></param>
-        /// <param name="envelop"></param>
-        /// <param name="detachedsignature"></param>
-        /// <returns>Json con el retorno de la api</returns>
-        string Sign
-        (
-            string token,
-            string signatureType,
-            string certid,
-            string certpin,
-            string profile,
-            string extensions,
-            string parameters,
-            string document,
-            string hashAlgType = "SHA256",
-            string envelop = "",
-            string detachedsignature = ""
-        );
 
 
         /// <summary>
@@ -144,27 +115,6 @@ namespace SignatureIntegration.External
             string detachedsignature = ""
         );
 
-        /// <summary>
-        /// Verificación de documento firmado. Sobrecarga compatible con la antigua dll
-        /// </summary>
-        /// <param name="token"></param>
-        /// <param name="signatureType"></param>
-        /// <param name="parameters"></param>
-        /// <param name="document"></param>
-        /// <param name="documentpassword"></param>
-        /// <param name="detachedsignature"></param>
-        /// <param name="refdata"></param>
-        /// <returns></returns>
-        bool Verify
-        (
-            string token, 
-            string signatureType,
-            string parameters,
-            string document,
-            string documentpassword = null,
-            string detachedsignature = null,
-            ReferenceData[] refdata = null
-        );
 
         /// <summary>
         /// Verificación de archivo firmado
