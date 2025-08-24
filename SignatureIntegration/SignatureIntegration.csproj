@@ -75,7 +75,9 @@
     <Compile Include="External\Interfaces\ISignatureClient.cs" />
     <Compile Include="External\Interfaces\ISignatureClientV6.cs" />
     <Compile Include="External\SignatureClient.cs" />
+    <Compile Include="InternalLogic\Crypto.cs" />
     <Compile Include="InternalLogic\Extensions.cs" />
+    <Compile Include="InternalLogic\Interfaces\ICrypto.cs" />
     <Compile Include="InternalLogic\SignatureAuxLogic.cs" />
     <Compile Include="Model\Iv6ClassModel\Biometry.cs" />
     <Compile Include="Model\Iv6ClassModel\Caller.cs" />
