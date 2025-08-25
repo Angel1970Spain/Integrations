@@ -25,7 +25,7 @@ namespace SignatureIntegration.Test
             var certId = ConfigurationManager.AppSettings["certid"];
             var outpdir = ConfigurationManager.AppSettings["ouputdirectory"];
 
-            ISignatureClient client = new SignatureClient(uri, endpoints);
+            ISignatureClient client = new SignatureClientDev(uri, endpoints);
 
             Console.WriteLine($"Uri: {uri.AbsoluteUri}");
             Console.WriteLine();

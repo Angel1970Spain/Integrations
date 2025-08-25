@@ -4,13 +4,13 @@ using Newtonsoft.Json.Linq;
 using SignatureIntegration.External;
 using SignatureIntegration.Model;
 using SignatureIntegration.Model.Enums;
-using SignatureIntegration.Model.Iv6ClassModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using UnitTestProjectForIntegrations.Data;
 using UnitTestProjectForIntegrations.Model;
@@ -20,6 +20,7 @@ namespace UnitTestProjectForIntegrations
     [TestClass]
     public class UnitTest1
     {
+        private NameValueCollection _settings;
 
         private ISignatureClientV6 _client;
 
@@ -31,15 +32,38 @@ namespace UnitTestProjectForIntegrations
 
         private string _certId = "";
 
+
         public UnitTest1() 
         {
-            var uri = new Uri(ConfigurationManager.AppSettings["ApiUrl"]);
+            Uri uri;
             var endpoints = GetEndpoints();
 
-            _certPin = ConfigurationManager.AppSettings["certpin"];
-            _certId = ConfigurationManager.AppSettings["certid"];
+            switch (ConfigurationManager.AppSettings["environment"]) 
+            {
+                case "DEV":
 
-            _client = new SignatureClient(uri, endpoints);
+                    _settings = (NameValueCollection)ConfigurationManager.GetSection("appSettings_DEV");
+
+                    uri = new Uri(_settings["ApiUrl"]);
+
+                    _client = new SignatureClientDev(uri, endpoints);
+
+                    break;
+
+                case "PRO":
+
+                    _settings = (NameValueCollection)ConfigurationManager.GetSection("appSettings_PRO");
+
+                    uri = new Uri(_settings["ApiUrl"]);
+
+                    _client = new SignatureClient(uri, endpoints);
+
+                    break;
+            }
+
+
+            _certPin = _settings["certpin"];
+            _certId = _settings["certid"];
 
             DataForTests.Documents
                 .ForEach(d => d.Path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Documents", d.Name));
@@ -57,10 +81,10 @@ namespace UnitTestProjectForIntegrations
         {
             try
             {
-                string orgaid = ConfigurationManager.AppSettings["orgaid"];
-                string login = ConfigurationManager.AppSettings["login"];
-                string password = ConfigurationManager.AppSettings["pass"];
-                string module = ConfigurationManager.AppSettings["module"];
+                string orgaid = _settings["orgaid"];
+                string login = _settings["login"];
+                string password = _settings["pass"];
+                string module = _settings["module"];
 
                 var r = _client.GetToken(orgaid, login, password, "pass", null, module);
 
@@ -83,10 +107,10 @@ namespace UnitTestProjectForIntegrations
         {
             try
             {
-                string orgaid = ConfigurationManager.AppSettings["orgaid"];
-                string login = ConfigurationManager.AppSettings["login"];
-                string pass = ConfigurationManager.AppSettings["pass"];
-                string module = ConfigurationManager.AppSettings["module"];
+                string orgaid = _settings["orgaid"];
+                string login = _settings["login"];
+                string pass = _settings["pass"];
+                string module = _settings["module"];
 
                 var r = await _client.GetTokenAsync(orgaid, login, pass, module);
 
@@ -147,8 +171,8 @@ namespace UnitTestProjectForIntegrations
                 }
 
 
-                string orgaid = ConfigurationManager.AppSettings["orgaid"];
-                string userid = ConfigurationManager.AppSettings["login"];
+                string orgaid = _settings["orgaid"];
+                string userid = _settings["login"];
 
                 _certs = await _client.GetCertificatesAsync(_token, userid, orgaid );
 

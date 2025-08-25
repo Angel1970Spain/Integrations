@@ -5,20 +5,15 @@ using SignatureIntegration.Model.Enums;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace SignatureIntegration.External
 {
-    [Guid("C4F3D9A7-9B47-4B32-ACF9-2E3D85B67F15")] 
-    [ClassInterface(ClassInterfaceType.None)]
-    [ProgId("SignatureIntegration.client")]
-    [ComVisible(true)]
-    public class SignatureClient: CommonSignatureClient, ISignatureClientV6
+    public class SignatureClientDev: CommonSignatureClient, ISignatureClientV6
     {
         private IConnectorForV6 _connector;
 
-        public SignatureClient(Uri baseUri, Dictionary<string, Uri> endpoints) : base(baseUri, endpoints)
+        public SignatureClientDev(Uri baseUri, Dictionary<string, Uri> endpoints) : base(baseUri, endpoints)
         {
             _connector = new ConnectorForV6();
         }
@@ -78,5 +73,6 @@ namespace SignatureIntegration.External
 
             return accessToken;
         }
+
     }
 }
